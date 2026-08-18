@@ -141,6 +141,17 @@ body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-fo
 .flaghead{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose);
   font-weight:700;margin-bottom:8px}
 .flagcard p{font-size:14px;line-height:1.6;font-weight:300}
+.promptcard{margin-top:20px;border:1px solid var(--line);background:rgba(241,238,251,.04);
+  border-radius:14px;padding:16px 18px}
+.promptheadrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.prompthead{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--fog);font-weight:700}
+.minibtn{background:none;border:1px solid var(--line);color:var(--paper);font-family:var(--sans);
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+  padding:8px 14px;border-radius:99px;transition:.22s;white-space:nowrap}
+.minibtn:hover{border-color:var(--rose);background:rgba(196,82,122,.12)}
+.prompttext{font-family:var(--sans);font-size:12.5px;line-height:1.65;font-weight:300;color:var(--fog);
+  white-space:pre-wrap;word-break:break-word;max-height:210px;overflow-y:auto;
+  background:rgba(7,6,12,.5);border-radius:10px;padding:14px;scrollbar-width:thin}
 #status.ok{color:#7fd6a4}
 #fallback{display:none;margin-top:10px}
 #fallback code{display:block;background:rgba(241,238,251,.05);border:1px dashed var(--line);border-radius:10px;
@@ -443,22 +454,31 @@ const CHECKLIST=[
   "Sign in with your <b>work account / SSO</b>, not a personal one.",
   "Open a chat and ask it anything, just to confirm your access works.",
   "Find the <b>Cowork tab</b> in the desktop app and open it once.",
-  "Find the <b>Code tab</b> (Claude Code) and open it once. No terminal needed, it's built in.",
-  "In Settings, open <b>Connectors</b> and connect one tool you actually use (Zoom or Outlook). About 30 seconds.",
-  "Install the <b>Claude mobile app</b> and sign in with the same account."
+  "Find the <b>Code tab</b> (Claude Code) and open it once, so it runs its first-time setup.",
+  "Open your terminal once so you know where it is. <b>Mac:</b> Cmd+Space, type Terminal. <b>Windows:</b> Start menu, type PowerShell.",
+  "Not sure any of it worked? <b>Paste the prompt below into Claude</b> and it will check everything with you, step by step."
 ];
+const SETUP_PROMPT=
+"I'm getting my laptop ready for an AI workshop tomorrow and I want to make sure everything is set up properly before I walk in.\n\n"+
+"Please walk me through this one step at a time, checking each thing before moving to the next, and keep the instructions simple. I'm not technical.\n\n"+
+"Here's what I need to confirm:\n"+
+"1. The Claude desktop app is installed and I'm signed in with my work account\n"+
+"2. Cowork is working\n"+
+"3. Claude Code is working, and any first-time setup it asks for is fully finished (this may include Python, Git, command line tools, or signing in to GitHub)\n"+
+"4. I can find and open my terminal, and I know which one I'm using (Terminal on Mac, PowerShell on Windows)\n\n"+
+"First ask me whether I'm on Mac or Windows, then give me the exact steps for my machine. "+
+"If something isn't installed or asks me to approve an install, tell me plainly whether I should say yes and what it does. "+
+"At the end, give me a short summary of what is ready and anything still outstanding.";
 const CHECKLIST_PLAIN="Workshop prep checklist\n"+
   "1. Install the Claude Desktop app from claude.ai/download\n"+
   "2. Sign in with your work account / SSO\n"+
   "3. Open a chat, ask anything, confirm access works\n"+
   "4. Open the Cowork tab once\n"+
-  "5. Open the Code tab (Claude Code) once\n"+
-  "6. Settings > Connectors: connect one tool (Zoom or Outlook)\n"+
-  "7. Install the Claude mobile app, same account\n\n"+
-  "Heads up: the first time you open Claude Code it may ask you to install extras "+
-  "(Python, Git, command line tools) or to sign in to GitHub. Say yes and finish all of it "+
-  "before the session. It only happens once, and it is the single most common reason "+
-  "people lose the first 20 minutes.";
+  "5. Open the Code tab (Claude Code) once so it runs first-time setup\n"+
+  "6. Open your terminal once so you know where it is\n"+
+  "   Mac: Cmd+Space, type Terminal. Windows: Start menu, type PowerShell.\n"+
+  "7. Not sure it worked? Paste this prompt into Claude and it will check everything with you:\n\n"+
+  SETUP_PROMPT;
 
 /* ---------------- the flow ---------------- */
 async function flow(){
@@ -563,6 +583,13 @@ async function flow(){
         <div class="flaghead">Important · first time opening Claude Code</div>
         <p>It may ask you to install extras (Python, Git, command line tools) or to sign in to GitHub. <b>Say yes and finish all of it before the session.</b> It only happens once, and it's the single most common reason people lose their first twenty minutes.</p>
       </div>
+      <div class="promptcard">
+        <div class="promptheadrow">
+          <div class="prompthead">Copy this into Claude and it will set you up</div>
+          <button id="copyprompt" class="minibtn">Copy prompt</button>
+        </div>
+        <pre class="prompttext" id="prompttext"></pre>
+      </div>
       <button id="copylist" class="copybtn">Copy checklist</button>
       <div id="status">Logging your response...</div>
       <div id="fallback"><p style="font-size:12.5px;color:var(--fog)">Network blocked the drop-box. Paste this code back to the organiser instead:</p>
@@ -570,6 +597,12 @@ async function flow(){
     </div></div>
     <div class="closing">Show up with the list done, and the whole session is building, not setup.<br><span class="grad">See you in the room.</span></div>
   `);
+  document.getElementById('prompttext').textContent=SETUP_PROMPT;
+  document.getElementById('copyprompt').addEventListener('click',()=>{
+    navigator.clipboard.writeText(SETUP_PROMPT);
+    document.getElementById('copyprompt').textContent='Copied ✓';
+    setTimeout(()=>{document.getElementById('copyprompt').textContent='Copy prompt'},2500);
+  });
   document.getElementById('copylist').addEventListener('click',()=>{
     navigator.clipboard.writeText(CHECKLIST_PLAIN);
     document.getElementById('copylist').textContent='Copied ✓';
