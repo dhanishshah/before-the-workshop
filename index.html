@@ -33,11 +33,11 @@ body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-fo
   background:linear-gradient(90deg,var(--ultra),var(--violet),var(--rose));transition:width .8s cubic-bezier(.7,0,.2,1)}
 
 /* top fade mask: content can never visually collide with the orb */
-#topfade{position:fixed;top:0;left:0;right:0;height:170px;z-index:50;pointer-events:none;
-  background:linear-gradient(to bottom,#07060c 38%,rgba(7,6,12,0))}
+#topfade{position:fixed;top:0;left:0;right:0;height:210px;z-index:62;pointer-events:none;
+  background:linear-gradient(to bottom,#07060c 62%,rgba(7,6,12,.85) 80%,rgba(7,6,12,0))}
 
 /* ---- the agent orb ---- */
-#orbwrap{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:60;text-align:center;
+#orbwrap{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:64;text-align:center;
   transition:transform .8s cubic-bezier(.2,.8,.2,1),top .8s}
 #orb{width:84px;height:84px;display:block;margin:0 auto}
 #orbname{margin-top:5px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fog);
@@ -173,7 +173,7 @@ body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-fo
 /* ============================================================
    CONFIG
    ============================================================ */
-const WEBHOOK_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyvModStDR72K2p-l8bvDW1vPLclAP07VbFtpW-jCFwaMSTQAnaW3hCPQgTemhQCLVd4A/exec";
 const AGENT_NAME  = "Maya";
 const OWNER_NAME  = "Dhanish";
 
@@ -405,7 +405,7 @@ const Q2_OPTS=[
   "Turning messy data into insights",
   "Agents that run a workflow start to finish",
   "Redlining and reviewing documents",
-  "Building a tool my team now uses",
+  "Building a reusable prompt or template library",
   "Writing code or small automations",
   "Wired into my real tools (Zoom, Outlook, Drive...)",
   "Client-ready charts and visuals",
@@ -424,9 +424,9 @@ const Q4_OPTS=[
   "A workflow wired into my real tools (Zoom, Outlook...)",
   "A Skill that compounds, smarter every week",
   "An agent that runs on its own, I just review",
-  "Something my whole team can use, not just me"
+  "A team of agents, each with a different job"
 ];
-const Q4_INTENSITY=[0,0,1,2,2,3,2];
+const Q4_INTENSITY=[0,0,1,2,2,3,3];
 /* internal only, for the response sheet. Never shown to the participant. */
 const INTERNAL=["Foundations","Momentum","Power user","Frontier"];
 /* the honest read, shown instead of any track or tag */
@@ -493,7 +493,7 @@ async function flow(){
     react:a=>{S.q2=a.values;
       const adv=["Building end-to-end decks, not just slides","Financial models or scenario analysis",
         "Turning messy data into insights","Agents that run a workflow start to finish",
-        "Redlining and reviewing documents","Building a tool my team now uses",
+        "Redlining and reviewing documents","Building a reusable prompt or template library",
         "Writing code or small automations","Wired into my real tools (Zoom, Outlook, Drive...)",
         "Client-ready charts and visuals"].filter(x=>S.q2.includes(x)).length;
       const n=S.q2.includes(Q2_EX)?0:S.q2.length;
@@ -535,10 +535,10 @@ async function flow(){
   await step({
     qtag:"<b>05</b> / 05 · the open door",
     title:`Name one thing that genuinely <span class="a">frustrates you</span>, that you wish AI could just do.`,
-    small:"Timesheets. Expense reports. Formatting decks at midnight. Chasing people for inputs. Anything, in your own words.",
+    small:"Timesheets. Expense reports. Formatting decks at midnight. Chasing people for inputs. Whatever you write here feeds what we build in the session.",
     hint:"One line · Enter to send",typed:true,
     placeholder:"The thing that steals your evenings...",
-    react:a=>{S.q5=a;return "Filed. The most common frustrations become the live builds in the room."}
+    react:a=>{S.q5=a;return "That goes straight into the build list. What people write here is the raw material we solve for in the room."}
   });
   setProgress(7);
 
