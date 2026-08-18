@@ -3,156 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Before the Workshop — 90 seconds</title>
+<title>Maya · Before the Workshop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#07060c;
-  --paper:#f1eefb;
-  --fog:#9d97b3;
-  --violet:#662AF4;
-  --rose:#C4527A;
-  --ultra:#2D0BD5;
-  --line:rgba(241,238,251,.14);
-  --serif:'Instrument Serif',Georgia,serif;
+  --ink:#07060c; --paper:#f1eefb; --fog:#9d97b3;
+  --violet:#662AF4; --rose:#C4527A; --ultra:#2D0BD5;
+  --line:rgba(241,238,251,.16);
+  --display:'Archivo',system-ui,sans-serif;
   --sans:'Space Grotesk',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
-body{
-  background:var(--ink);color:var(--paper);font-family:var(--sans);
-  overflow:hidden;-webkit-font-smoothing:antialiased;
-}
-@media(pointer:fine){ body{cursor:none} body a,body button,body .opt,body .chip{cursor:none} }
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
+@media(pointer:fine){ body{cursor:none} body button,body textarea,body input{cursor:none} }
 
 #bg{position:fixed;inset:0;z-index:0}
 #grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;mix-blend-mode:overlay}
 
-/* ---- custom cursor ---- */
-#cursor{position:fixed;z-index:60;width:18px;height:18px;border:1px solid var(--paper);
-  border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);
-  transition:width .25s ease,height .25s ease,opacity .3s;opacity:0}
-#cursor.on{opacity:.9}
-#cursor.hov{width:40px;height:40px;border-color:var(--rose)}
-#cursor i{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;
-  background:var(--paper);transform:translate(-50%,-50%)}
+#cursor{position:fixed;z-index:90;width:18px;height:18px;border:1px solid var(--paper);border-radius:50%;
+  pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,opacity .3s;opacity:0}
+#cursor.on{opacity:.9}#cursor.hov{width:40px;height:40px;border-color:var(--rose)}
+#cursor i{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;background:var(--paper);transform:translate(-50%,-50%)}
 @media(pointer:coarse){#cursor{display:none}}
 
-/* ---- chrome ---- */
-#progress{position:fixed;top:0;left:0;height:2px;z-index:50;width:0%;
-  background:linear-gradient(90deg,var(--ultra),var(--violet),var(--rose));
-  transition:width .7s cubic-bezier(.7,0,.2,1)}
-#brand{position:fixed;top:22px;left:26px;z-index:50;font-size:11px;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--fog)}
-#sound{position:fixed;top:18px;right:22px;z-index:50;background:none;border:1px solid var(--line);
-  color:var(--fog);font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  padding:8px 14px;border-radius:99px;transition:color .3s,border-color .3s}
-#sound:hover{color:var(--paper);border-color:var(--paper)}
-#sound.on{color:var(--paper);border-color:var(--rose)}
+#progress{position:fixed;top:0;left:0;height:2px;z-index:80;width:0%;
+  background:linear-gradient(90deg,var(--ultra),var(--violet),var(--rose));transition:width .8s cubic-bezier(.7,0,.2,1)}
 
-/* ---- screens ---- */
-.screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-  padding:28px;opacity:0;visibility:hidden;transform:translateY(26px);
-  transition:opacity .6s ease,transform .6s cubic-bezier(.6,0,.2,1),visibility 0s .6s}
-.screen.live{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease .15s,transform .6s cubic-bezier(.2,.8,.2,1) .15s}
-.col{width:100%;max-width:660px}
+/* top fade mask: content can never visually collide with the orb */
+#topfade{position:fixed;top:0;left:0;right:0;height:170px;z-index:50;pointer-events:none;
+  background:linear-gradient(to bottom,#07060c 38%,rgba(7,6,12,0))}
 
-.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--fog);margin-bottom:22px}
-.eyebrow b{color:var(--rose);font-weight:500}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(42px,7.5vw,84px);line-height:1.02;letter-spacing:-.01em}
-h1 em{font-style:italic;background:linear-gradient(100deg,var(--violet),var(--rose));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.6vw,50px);line-height:1.08;margin-bottom:8px}
-h2 em{font-style:italic;color:var(--rose)}
-.sub{color:var(--fog);font-size:15px;line-height:1.55;font-weight:300;margin-top:14px;max-width:46ch}
+/* ---- the agent orb ---- */
+#orbwrap{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:60;text-align:center;
+  transition:transform .8s cubic-bezier(.2,.8,.2,1),top .8s}
+#orb{width:84px;height:84px;display:block;margin:0 auto}
+#orbname{margin-top:5px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fog);
+  opacity:0;transition:opacity 1s .5s;font-weight:600;white-space:nowrap}
+#orbname.show{opacity:1}
+#orbname b{color:var(--rose)}
 
-/* ---- controls ---- */
-.opts{margin-top:34px;display:flex;flex-direction:column;gap:10px}
-.opt{display:flex;align-items:baseline;gap:16px;text-align:left;background:rgba(241,238,251,.03);
-  border:1px solid var(--line);border-radius:14px;padding:15px 18px;color:var(--paper);
-  font-family:var(--sans);font-size:15.5px;font-weight:300;letter-spacing:.01em;
-  transition:border-color .25s,background .25s,transform .25s}
-.opt:hover{border-color:var(--rose);background:rgba(196,82,122,.07);transform:translateX(6px)}
-.opt .k{font-size:11px;color:var(--fog);letter-spacing:.15em;min-width:14px}
-.opt.picked{border-color:var(--violet);background:rgba(102,42,244,.12)}
+/* ---- single-question stage ---- */
+#stage{position:fixed;inset:0;z-index:10;display:flex;overflow-y:auto;scrollbar-width:none;
+  padding:180px 24px 56px;-webkit-overflow-scrolling:touch}
+#stage::-webkit-scrollbar{display:none}
+.scene{width:100%;max-width:680px;margin:auto;display:flex;flex-direction:column;gap:8px;
+  opacity:0;transform:translateY(48px);transition:opacity .55s,transform .55s cubic-bezier(.2,.8,.2,1)}
+.scene.in{opacity:1;transform:none}
+.scene.out{opacity:0;transform:translateY(-48px);transition:opacity .45s,transform .45s cubic-bezier(.6,0,.8,.4)}
 
-.chips{margin-top:32px;display:flex;flex-wrap:wrap;gap:10px}
-.chip{border:1px solid var(--line);background:rgba(241,238,251,.03);color:var(--paper);
-  font-family:var(--sans);font-size:14px;font-weight:300;padding:12px 20px;border-radius:99px;
-  transition:.25s;position:relative}
-.chip:hover{border-color:var(--rose);transform:translateY(-2px)}
-.chip.picked{border-color:var(--violet);background:rgba(102,42,244,.16)}
-.chip .rank{position:absolute;top:-9px;right:-6px;width:20px;height:20px;border-radius:50%;
-  background:linear-gradient(120deg,var(--violet),var(--rose));color:#fff;font-size:11px;
-  display:flex;align-items:center;justify-content:center;font-weight:500}
+.qtag{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--fog);font-weight:600;margin-bottom:12px}
+.qtag b{color:var(--rose)}
+.title{font-family:var(--display);font-weight:800;font-size:clamp(27px,4.4vw,47px);
+  line-height:1.06;letter-spacing:-.02em}
+.title .a{color:var(--rose)}
+.title .grad{background:linear-gradient(100deg,#8f5bff,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+.small{font-size:15px;font-weight:300;color:var(--fog);line-height:1.6;margin-top:10px;max-width:56ch}
+.small b{font-weight:500;color:var(--paper)}
 
-textarea,input[type=text]{width:100%;background:rgba(241,238,251,.04);border:1px solid var(--line);
-  border-radius:14px;color:var(--paper);font-family:var(--sans);font-weight:300;font-size:16px;
-  padding:16px 18px;outline:none;resize:none;transition:border-color .25s}
-textarea:focus,input[type=text]:focus{border-color:var(--violet)}
-textarea::placeholder,input::placeholder{color:rgba(157,151,179,.55)}
+.controls{margin-top:26px}
+.controls.gone{opacity:0;transform:translateY(-8px);pointer-events:none}
+.hintline{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--fog);font-weight:600;margin-bottom:14px}
+.hintline:empty{display:none}
+.chipset{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:10px}
+.chipset.single{display:flex}
+.chip{border:1px solid var(--line);background:rgba(241,238,251,.05);color:var(--paper);
+  font-family:var(--sans);font-size:14.5px;font-weight:500;padding:13px 18px;border-radius:14px;
+  transition:.22s;opacity:0;transform:translateY(10px);text-align:left;width:100%}
+.chip.in{opacity:1;transform:none}
+.chip:hover{border-color:var(--rose);transform:translateY(-2px);background:rgba(196,82,122,.1)}
+.chip.picked{border-color:var(--violet);background:rgba(102,42,244,.22)}
+.chip.begin{background:var(--paper);color:var(--ink);font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;font-size:13px;padding:17px 34px;border-radius:99px;width:auto}
+.chip.begin:hover{box-shadow:0 8px 40px rgba(196,82,122,.4)}
+.chip.go{border-color:var(--rose);color:var(--rose);font-weight:600}
 
-.next{margin-top:26px;display:inline-flex;align-items:center;gap:12px;background:var(--paper);
-  color:var(--ink);border:none;font-family:var(--sans);font-weight:500;font-size:13px;
-  letter-spacing:.2em;text-transform:uppercase;padding:16px 30px;border-radius:99px;
-  transition:transform .25s,box-shadow .25s,opacity .3s}
-.next:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(196,82,122,.35)}
-.next:disabled{opacity:.25;pointer-events:none}
-.ghost{background:none;border:none;color:var(--fog);font-family:var(--sans);font-size:12px;
-  letter-spacing:.14em;text-transform:uppercase;margin-top:14px;margin-left:6px;text-decoration:underline;text-underline-offset:4px}
-.ghost:hover{color:var(--paper)}
+/* full-scene feedback moment */
+.reacttag{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--fog);font-weight:600;margin-bottom:16px}
+.reacttag b{color:var(--rose)}
+.reactbig{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,46px);
+  line-height:1.12;letter-spacing:-.02em;color:var(--paper)}
+.reactbig .r{color:var(--rose)}
 
-/* ---- the form talks back ---- */
-.react{min-height:26px;margin-top:24px;font-family:var(--serif);font-style:italic;
-  font-size:19px;color:var(--rose);opacity:0;transform:translateY(6px);transition:.4s}
+/* action row: opt-out on the left, Done on the right */
+.actionrow{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:22px;
+  padding-top:20px;border-top:1px solid var(--line);opacity:0;transform:translateY(8px);transition:.4s}
+.actionrow.in{opacity:1;transform:none}
+.optout{background:none;border:1px dashed rgba(157,151,179,.45);color:var(--fog);
+  font-family:var(--sans);font-size:13.5px;font-weight:400;padding:12px 20px;border-radius:99px;transition:.22s}
+.optout:hover{border-color:var(--rose);border-style:solid;color:var(--paper)}
+.optout.picked{border-style:solid;border-color:var(--violet);background:rgba(102,42,244,.2);color:var(--paper)}
+.donebtn{margin-left:auto;background:var(--paper);color:var(--ink);border:none;border-radius:99px;
+  font-family:var(--sans);font-weight:700;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:15px 30px;transition:.25s;opacity:.28;pointer-events:none}
+.donebtn.ready{opacity:1;pointer-events:auto}
+.donebtn.ready:hover{box-shadow:0 8px 34px rgba(196,82,122,.45);transform:translateY(-2px)}
+@media(max-width:640px){.donebtn{margin-left:0;width:100%}}
+
+.typedblock{display:flex;gap:10px}
+.typedblock textarea{flex:1;background:rgba(241,238,251,.05);border:1px solid var(--line);border-radius:14px;
+  color:var(--paper);font-family:var(--sans);font-weight:400;font-size:15.5px;padding:15px 17px;outline:none;resize:none;height:84px}
+.typedblock textarea:focus{border-color:var(--violet)}
+.typedblock textarea::placeholder{color:rgba(157,151,179,.5)}
+.typedblock button{align-self:flex-end;background:var(--paper);color:var(--ink);border:none;border-radius:99px;
+  font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:15px 24px;transition:.25s}
+.typedblock button:hover{box-shadow:0 8px 30px rgba(196,82,122,.4)}
+
+.react{margin-top:30px;font-family:var(--display);font-weight:700;font-size:clamp(19px,2.6vw,25px);
+  line-height:1.25;letter-spacing:-.01em;color:var(--rose);
+  opacity:0;transform:translateY(10px);transition:.45s}
 .react.show{opacity:1;transform:none}
-.react::after{content:'▍';animation:blink 1s steps(1) infinite;color:var(--violet);font-style:normal}
-.react.done::after{content:''}
-@keyframes blink{50%{opacity:0}}
 
-/* ---- Q3 A/B cards ---- */
-.ab{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:640px){.ab{grid-template-columns:1fr}}
-.abcard{text-align:left;border:1px solid var(--line);background:rgba(241,238,251,.03);
-  border-radius:16px;padding:22px;color:var(--paper);font-family:var(--sans);transition:.3s;position:relative;overflow:hidden}
-.abcard:hover{border-color:var(--rose);transform:translateY(-3px)}
-.abcard .tag{font-size:11px;letter-spacing:.22em;color:var(--fog);text-transform:uppercase;margin-bottom:12px}
-.abcard p{font-size:14.5px;line-height:1.6;font-weight:300}
-.abcard.reveal-ai{border-color:var(--violet);background:rgba(102,42,244,.12)}
-.abcard.reveal-human{border-color:var(--line);opacity:.55}
-.abcard .stamp{position:absolute;top:14px;right:16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-  padding:4px 10px;border-radius:99px;opacity:0;transition:.4s .2s}
-.abcard.reveal-ai .stamp{opacity:1;background:linear-gradient(120deg,var(--violet),var(--rose));color:#fff}
-.abcard.reveal-human .stamp{opacity:1;border:1px solid var(--line);color:var(--fog)}
-.ab.locked .abcard{pointer-events:none}
-
-/* ---- archetype ---- */
-#card{position:relative;border-radius:22px;padding:2px;margin-top:36px;opacity:0;transform:scale(.94);transition:1s cubic-bezier(.2,.8,.2,1)}
-#card.show{opacity:1;transform:none}
-#card::before{content:'';position:absolute;inset:0;border-radius:22px;padding:1.5px;
-  background:conic-gradient(from var(--a,0deg),var(--ultra),var(--violet),var(--rose),var(--ultra));
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;animation:spin 5s linear infinite}
+/* ---- briefing ---- */
+.brief{position:relative;border-radius:20px;padding:1.5px;margin-top:26px;
+  background:conic-gradient(from var(--a,0deg),var(--ultra),var(--violet),var(--rose),var(--ultra));animation:spin 5s linear infinite}
 @property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
 @keyframes spin{to{--a:360deg}}
-#card .in{position:relative;border-radius:20px;background:rgba(12,10,22,.82);backdrop-filter:blur(18px);
-  padding:44px 40px;text-align:left}
-#card .lbl{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--fog);margin-bottom:14px}
-#card .name{font-family:var(--serif);font-size:clamp(38px,6vw,58px);line-height:1;
+.brief .in2{border-radius:19px;background:rgba(12,10,22,.9);backdrop-filter:blur(16px);padding:34px 32px}
+.brief .lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fog);font-weight:600}
+.brief .lvl{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.6vw,42px);line-height:1.02;
+  letter-spacing:-.02em;margin:10px 0 6px;
   background:linear-gradient(100deg,var(--paper),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
-#card .lines{margin-top:20px;color:var(--fog);font-weight:300;font-size:15.5px;line-height:1.65}
-#card .lines b{color:var(--paper);font-weight:400}
-#status{margin-top:22px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog)}
+.brief .tag{font-size:13.5px;color:var(--fog);font-weight:300;margin-bottom:16px;line-height:1.5}
+.brief h4{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--rose);margin:18px 0 8px;font-weight:700}
+.brief p,.brief li{font-size:14.5px;font-weight:300;line-height:1.65;color:var(--paper)}
+.brief p b,.brief li b{font-weight:600}
+.brief ol{margin-left:18px;display:flex;flex-direction:column;gap:8px}
+#status{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-top:16px;font-weight:600}
+.copybtn{margin-top:18px;background:var(--paper);color:var(--ink);border:none;border-radius:99px;
+  font-family:var(--sans);font-weight:700;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:13px 24px;transition:.25s}
+.copybtn:hover{box-shadow:0 8px 30px rgba(196,82,122,.4)}
+.flagcard{margin-top:20px;border:1px solid rgba(196,82,122,.5);background:rgba(196,82,122,.09);
+  border-radius:14px;padding:18px 20px}
+.flaghead{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose);
+  font-weight:700;margin-bottom:8px}
+.flagcard p{font-size:14px;line-height:1.6;font-weight:300}
 #status.ok{color:#7fd6a4}
-#fallback{display:none;margin-top:14px}
-#fallback code{display:block;background:rgba(241,238,251,.05);border:1px dashed var(--line);
-  border-radius:10px;padding:12px;font-size:11px;word-break:break-all;color:var(--fog);margin-top:8px}
+#fallback{display:none;margin-top:10px}
+#fallback code{display:block;background:rgba(241,238,251,.05);border:1px dashed var(--line);border-radius:10px;
+  padding:12px;font-size:11px;word-break:break-all;color:var(--fog);margin-top:8px}
+#fallback button{background:none;border:none;color:var(--fog);font-family:var(--sans);font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;margin-top:8px;text-decoration:underline;text-underline-offset:4px;font-weight:600}
+.closing{margin-top:26px;font-family:var(--display);font-weight:700;font-size:clamp(19px,2.6vw,24px);line-height:1.3;letter-spacing:-.01em}
+.closing .grad{background:linear-gradient(100deg,#8f5bff,var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
 
-@media(prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
-}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:640px){#stage{padding-top:160px}#topfade{height:150px}.title{font-size:29px}}
 </style>
 </head>
 <body>
@@ -161,397 +160,449 @@ textarea::placeholder,input::placeholder{color:rgba(157,151,179,.55)}
 <canvas id="grain"></canvas>
 <div id="cursor"><i></i></div>
 <div id="progress"></div>
-<div id="brand">Design Studios · Pre-read</div>
-<button id="sound" aria-pressed="false">Sound · off</button>
+<div id="topfade"></div>
 
-<!-- 0 · INTRO -->
-<section class="screen live" id="s0">
-  <div class="col">
-    <div class="eyebrow">Before the workshop · <b>90 seconds</b> · 5 questions</div>
-    <h1>This form is<br><em>reading you.</em></h1>
-    <p class="sub">Five questions before the Claude session. No wrong answers — but the form has opinions, and it will share them. What you say here quietly decides what we build for you in the room.</p>
-    <button class="next" data-go="1">Begin →</button>
-  </div>
-</section>
+<div id="orbwrap">
+  <canvas id="orb" width="168" height="168"></canvas>
+  <div id="orbname"></div>
+</div>
 
-<!-- 0.5 · TIER -->
-<section class="screen" id="s1">
-  <div class="col">
-    <div class="eyebrow">First — who's answering?</div>
-    <h2>Your <em>vantage point.</em></h2>
-    <p class="sub">Same five questions for everyone. Different stakes.</p>
-    <div class="chips" id="tierChips"></div>
-    <div class="react" id="r1"></div>
-  </div>
-</section>
-
-<!-- 1 · Q1 -->
-<section class="screen" id="s2">
-  <div class="col">
-    <div class="eyebrow"><b>01</b> / 05</div>
-    <h2>When did you last put AI to <em>real work?</em></h2>
-    <div class="opts" id="q1opts"></div>
-    <div id="q1follow" style="display:none;margin-top:18px">
-      <input type="text" id="q1text" maxlength="140" placeholder="One line — what did you make it do?">
-      <button class="next" data-go="3" style="margin-top:18px">Next →</button>
-    </div>
-    <div class="react" id="r2"></div>
-  </div>
-</section>
-
-<!-- 2 · Q2 -->
-<section class="screen" id="s3">
-  <div class="col">
-    <div class="eyebrow"><b>02</b> / 05</div>
-    <h2>Where do your hours actually <em>go to die?</em></h2>
-    <p class="sub">Tap your top three, worst first. The form is taking notes.</p>
-    <div class="chips" id="q2chips"></div>
-    <button class="ghost" id="q2reset">Start over</button>
-    <div class="react" id="r3"></div>
-    <div><button class="next" id="q2next" data-go="4" disabled>Next →</button></div>
-  </div>
-</section>
-
-<!-- 3 · Q3 -->
-<section class="screen" id="s4">
-  <div class="col">
-    <div class="eyebrow"><b>03</b> / 05 · a small test</div>
-    <h2>One of these was written by <em>Claude.</em></h2>
-    <p class="sub">Two takeaway slides from the same case. Trust your eye.</p>
-    <div class="ab" id="ab">
-      <button class="abcard" data-ab="A">
-        <div class="tag">Exhibit A<span class="stamp">Human</span></div>
-        <p>Churn is concentrated in the mid-market segment — roughly 60% of losses from ~20% of accounts. Worth noting the data only covers two quarters, so we'd want to validate before making this the headline, but the pattern held in both.</p>
-      </button>
-      <button class="abcard" data-ab="B">
-        <div class="tag">Exhibit B<span class="stamp">Claude</span></div>
-        <p>Mid-market accounts drive a disproportionate share of churn: 20% of the base, 60% of losses. The pattern is consistent across both observed quarters, though the short window argues for validation before anchoring the recommendation on it.</p>
-      </button>
-    </div>
-    <div class="react" id="r4"></div>
-    <div><button class="next" id="q3next" data-go="5" style="display:none">Next →</button></div>
-  </div>
-</section>
-
-<!-- 4 · Q4 -->
-<section class="screen" id="s5">
-  <div class="col">
-    <div class="eyebrow"><b>04</b> / 05</div>
-    <h2>What actually <em>stops you?</em></h2>
-    <p class="sub">Pick everything that's true. Honesty is anonymous-ish.</p>
-    <div class="chips" id="q4chips"></div>
-    <div class="react" id="r5"></div>
-    <div><button class="next" id="q4next" data-go="6" disabled>Next →</button></div>
-  </div>
-</section>
-
-<!-- 5 · Q5 -->
-<section class="screen" id="s6">
-  <div class="col">
-    <div class="eyebrow"><b>05</b> / 05 · the magic wand</div>
-    <h2>One task from <em>this month</em> you'd hand over tomorrow —</h2>
-    <p class="sub">— if you knew it would just work. Be specific. The best answers get solved live, in the room.</p>
-    <div style="margin-top:26px"><textarea id="q5text" rows="3" maxlength="280" placeholder="e.g. Turn our interview notes into a first-draft findings deck…"></textarea></div>
-    <button class="next" id="finish">Read my result →</button>
-  </div>
-</section>
-
-<!-- 6 · ARCHETYPE -->
-<section class="screen" id="s7">
-  <div class="col">
-    <div class="eyebrow">The form has decided</div>
-    <h2>You are —</h2>
-    <div id="card"><div class="in">
-      <div class="lbl">AI fluency archetype</div>
-      <div class="name" id="archName"></div>
-      <div class="lines" id="archLines"></div>
-    </div></div>
-    <div id="status">Logging your response…</div>
-    <div id="fallback">
-      <p class="sub" style="margin-top:0">Network blocked the drop-box. Paste this code back to the organiser instead:</p>
-      <code id="fbcode"></code>
-      <button class="ghost" id="copyfb">Copy code</button>
-    </div>
-  </div>
-</section>
+<div id="stage"></div>
 
 <script>
-/* =============================================================
-   CONFIG — paste your Apps Script web-app URL between the quotes
-   ============================================================= */
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyvModStDR72K2p-l8bvDW1vPLclAP07VbFtpW-jCFwaMSTQAnaW3hCPQgTemhQCLVd4A/exec";
-const CLAUDE_EXHIBIT = "B";
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const WEBHOOK_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+const AGENT_NAME  = "Maya";
+const OWNER_NAME  = "Dhanish";
 
 /* ---------------- state ---------------- */
-const S = { tier:null, q1:null, q1text:"", q2:[], q3:null, q4:[], q5:"", start:Date.now() };
+const S={tier:null,q1:null,q1i:0,q2:[],q3:[],q4:[],q4i:0,q5:"",level:0,start:Date.now()};
 
-/* ---------------- data ---------------- */
-const TIERS = ["Associate","Consultant","Project Leader","Principal / Partner","MDP"];
-const TIER_REACT = {
-  "Associate":"The tier with the least to unlearn. Advantage: you.",
-  "Consultant":"Peak hours-per-slide territory. We can work with that.",
-  "Project Leader":"You review everyone's everything. This gets interesting.",
-  "Principal / Partner":"Your time costs the most. So does not knowing this.",
-  "MDP":"Noted. The form will be on its best behaviour."
-};
-const Q1 = [
-  {k:"A", t:"Today — it's part of how I work", r:"So you're the one the others quietly ask."},
-  {k:"B", t:"This week, for something real", r:"A real task counts double. Noted."},
-  {k:"C", t:"I've tried it a few times", r:"Tried it, filed it away. We'll reopen the file."},
-  {k:"D", t:"I've mostly watched others use it", r:"Spectating is research. Technically."},
-  {k:"E", t:"Honestly — never for work", r:"Perfect. Zero bad habits to unlearn."}
-];
-const Q2 = ["Research & synthesis","Building decks","Excel & analysis","Writing — emails, memos, proposals","Meeting prep & follow-ups","Reviewing others' work"];
-const Q2_REACT = {
-  "Research & synthesis":"Hours down the source mines. We can send a machine down instead.",
-  "Building decks":"Decks first. The workshop just wrote itself.",
-  "Excel & analysis":"The spreadsheet hours. There's a whole act about that.",
-  "Writing — emails, memos, proposals":"Words by the pound. Fixable.",
-  "Meeting prep & follow-ups":"Meetings about meetings. We've all been there.",
-  "Reviewing others' work":"Trust, but verify — faster. Good pick."
-};
-const Q4 = ["Client confidentiality worries","I don't trust the output","I don't know what to ask it","Faster to do it myself","Feels a bit like cheating","Nothing — I use it constantly"];
-const Q4_REACT = [
-  ["Faster to do it myself","'Faster to do it myself' — the most expensive sentence in consulting."],
-  ["Client confidentiality worries","Confidentiality first — sensible. There's a safe way to do all of this. We'll show it."],
-  ["I don't know what to ask it","'Don't know what to ask' — the most fixable problem on this list."],
-  ["I don't trust the output","Healthy skepticism. We'll teach it to show its work."],
-  ["Feels a bit like cheating","Only cheating if the machine does the thinking. It won't."],
-  ["Nothing — I use it constantly","Then you'll want the advanced track. It exists."]
-];
-const ARCHETYPES = {
-  power:{n:"The Secret Power User", l:"You already use it daily — <b>and</b> you can spot its handwriting. In the room, skip the basics: your track is agents, tools and the things nobody's shown you yet."},
-  delegator:{n:"The Delegator", l:"You hand work over freely — but the machine's prose slipped past you. Your unlock is the <b>verification layer</b>: getting speed without inheriting its mistakes."},
-  verifier:{n:"The Verifier", l:"You caught it. Your instinct is to distrust first — which makes you exactly the person advanced workflows are built for. We'll show it <b>showing its work</b>."},
-  bystander:{n:"The Curious Bystander", l:"Watching from a safe distance, mostly wondering what to even ask. Good news: that's the fastest gap to close, and it closes in the <b>first hour</b>."},
-  skeptic:{n:"The Skeptic", l:"You have reasons, and honestly, some are good ones. The workshop's job isn't to convert you — it's to put one <b>undeniable result</b> in your hands and let you decide."},
-  explorer:{n:"The Explorer", l:"You've poked at it, seen a flicker of the point, and parked it. The session is built to move you from <b>flicker to habit</b> — with your own work, not demos."}
-};
-
-/* ---------------- background: living blobs ---------------- */
-const bg = document.getElementById('bg'), bx = bg.getContext('2d');
-let W,H,energy=0.25, mx=innerWidth/2, my=innerHeight/2, vx=0, vy=0, lx=mx, ly=my;
-const COLS = ['#662AF4','#C4527A','#2D0BD5','#8b3df0'];
-const blobs = Array.from({length:7},(_,i)=>({
-  x:Math.random(), y:Math.random(),
-  r:.18+Math.random()*.22, c:COLS[i%COLS.length],
-  sp:.4+Math.random()*.8, ph:Math.random()*Math.PI*2, ph2:Math.random()*Math.PI*2
-}));
-function sizeBG(){W=bg.width=innerWidth*devicePixelRatio;H=bg.height=innerHeight*devicePixelRatio;bg.style.width=innerWidth+'px';bg.style.height=innerHeight+'px'}
+/* ---------------- background blobs ---------------- */
+const bg=document.getElementById('bg'),bx=bg.getContext('2d');
+let W,H,energy=.3,mx=innerWidth/2,my=innerHeight/2,vx=0,vy=0,lx=mx,ly=my;
+const COLS=['#662AF4','#C4527A','#2D0BD5','#8b3df0'];
+const blobs=Array.from({length:7},(_,i)=>({x:Math.random(),y:Math.random(),r:.18+Math.random()*.22,
+  c:COLS[i%COLS.length],sp:.4+Math.random()*.8,ph:Math.random()*6.28,ph2:Math.random()*6.28}));
+function sizeBG(){W=bg.width=innerWidth*devicePixelRatio;H=bg.height=innerHeight*devicePixelRatio;
+  bg.style.width=innerWidth+'px';bg.style.height=innerHeight+'px'}
 sizeBG();addEventListener('resize',sizeBG);
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let t0=performance.now();
-function paint(now){
+(function paint(now){
   const t=(now-t0)/1000;
-  bx.fillStyle='#07060c';bx.fillRect(0,0,W,H);
-  bx.globalCompositeOperation='screen';
-  vx += ((mx-lx)*devicePixelRatio - vx)*.08; vy += ((my-ly)*devicePixelRatio - vy)*.08;
-  lx=mx; ly=my;
-  const drift = Math.hypot(vx,vy);
-  blobs.forEach((b,i)=>{
-    const sp = b.sp*(.35+energy*1.4)*(reduced?0.15:1);
-    const px = (b.x + Math.sin(t*sp*.21+b.ph)*.22 + Math.cos(t*sp*.13+b.ph2)*.14)*W;
-    const py = (b.y + Math.cos(t*sp*.17+b.ph2)*.22 + Math.sin(t*sp*.11+b.ph)*.14)*H;
-    const pull = 1/(1+Math.hypot(px-mx*devicePixelRatio,py-my*devicePixelRatio)/(W*.25));
-    const jx = px + vx*pull*2.2, jy = py + vy*pull*2.2;
-    const r = b.r*Math.min(W,H)*(1+energy*.5+pull*drift*.0006);
-    const g = bx.createRadialGradient(jx,jy,0,jx,jy,r);
+  bx.fillStyle='#07060c';bx.fillRect(0,0,W,H);bx.globalCompositeOperation='screen';
+  vx+=((mx-lx)*devicePixelRatio-vx)*.08;vy+=((my-ly)*devicePixelRatio-vy)*.08;lx=mx;ly=my;
+  const drift=Math.hypot(vx,vy);
+  blobs.forEach(b=>{
+    const sp=b.sp*(.35+energy*1.3)*(reduced?.15:1);
+    const px=(b.x+Math.sin(t*sp*.21+b.ph)*.22+Math.cos(t*sp*.13+b.ph2)*.14)*W;
+    const py=(b.y+Math.cos(t*sp*.17+b.ph2)*.22+Math.sin(t*sp*.11+b.ph)*.14)*H;
+    const pull=1/(1+Math.hypot(px-mx*devicePixelRatio,py-my*devicePixelRatio)/(W*.25));
+    const jx=px+vx*pull*2.2,jy=py+vy*pull*2.2;
+    const r=b.r*Math.min(W,H)*(1+energy*.5+pull*drift*.0006);
+    const g=bx.createRadialGradient(jx,jy,0,jx,jy,r);
     g.addColorStop(0,b.c+'cc');g.addColorStop(1,b.c+'00');
-    bx.globalAlpha=.16+energy*.30;
-    bx.fillStyle=g;bx.beginPath();bx.arc(jx,jy,r,0,7);bx.fill();
+    bx.globalAlpha=.15+energy*.28;bx.fillStyle=g;bx.beginPath();bx.arc(jx,jy,r,0,7);bx.fill();
   });
   bx.globalAlpha=1;bx.globalCompositeOperation='source-over';
   requestAnimationFrame(paint);
-}
-requestAnimationFrame(paint);
+})(t0);
 
 /* grain */
 const gr=document.getElementById('grain'),gx=gr.getContext('2d');
 function grain(){gr.width=innerWidth/2;gr.height=innerHeight/2;gr.style.width=innerWidth+'px';gr.style.height=innerHeight+'px';
-  const d=gx.createImageData(gr.width,gr.height);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=14}gx.putImageData(d,0,0)}
+  const d=gx.createImageData(gr.width,gr.height);
+  for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=14}
+  gx.putImageData(d,0,0)}
 grain();addEventListener('resize',grain);
 
-/* ---------------- cursor ---------------- */
+/* cursor */
 const cur=document.getElementById('cursor');let cx=mx,cy=my,shown=false;
 addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;if(!shown){cur.classList.add('on');shown=true}});
-(function loop(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(loop)})();
-addEventListener('mouseover',e=>{if(e.target.closest('button,.opt,.chip,a,textarea,input'))cur.classList.add('hov')});
+(function cl(){cx+=(mx-cx)*.28;cy+=(my-cy)*.28;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(cl)})();
+addEventListener('mouseover',e=>{if(e.target.closest('button,textarea,input'))cur.classList.add('hov')});
 addEventListener('mouseout',()=>cur.classList.remove('hov'));
 
-/* ---------------- sound (all synthesized) ---------------- */
-let AC=null, master=null, soundOn=false;
-function ensureAudio(){
-  if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();
-  master=AC.createGain();master.gain.value=.22;master.connect(AC.destination);
-  const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1500;lp.Q.value=.1;
-  const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=.05;lg.gain.value=300;
-  lfo.connect(lg);lg.connect(lp.frequency);lfo.start();
-  [[220,'sine',.09],[329.63,'sine',.045],[440,'triangle',.02],[659.25,'sine',.012]].forEach(([f,ty,g])=>{
-    const o=AC.createOscillator(),og=AC.createGain();o.type=ty;o.frequency.value=f;og.gain.value=g;
-    o.connect(og);og.connect(lp);o.start();
+/* ---------------- the agent orb ---------------- */
+document.getElementById('orbname').innerHTML='<b>'+AGENT_NAME+'</b> · '+OWNER_NAME+"'s agent · active";
+const orb=document.getElementById('orb'),ox=orb.getContext('2d');
+const OC=84,targets=[];
+for(let i=0;i<46;i++){const a=i/46*6.283;targets.push({x:OC+Math.cos(a)*57,y:OC+Math.sin(a)*57,s:2.1})}
+for(let i=0;i<28;i++){const a=i/28*6.283+.3;targets.push({x:OC+Math.cos(a)*35,y:OC+Math.sin(a)*35,s:2.6})}
+for(let i=0;i<18;i++){const a=Math.random()*6.283,r=Math.random()*13;targets.push({x:OC+Math.cos(a)*r,y:OC+Math.sin(a)*r,s:3.1})}
+const parts=targets.map(t=>({x:OC+(Math.random()-.5)*420,y:OC+(Math.random()-.5)*420,vx:0,vy:0,t}));
+let orbState='assembling',orbPulse=0,orbT=0,onOrbReady=null;
+(function orbLoop(){
+  orbT+=.016;ox.clearRect(0,0,168,168);
+  const breathe=orbState==='talking'?1+Math.sin(orbT*9)*.06:1+Math.sin(orbT*1.6)*.025;
+  orbPulse+=((orbState==='talking'?1:0)-orbPulse)*.08;
+  let settled=0;
+  parts.forEach((p,i)=>{
+    const spin=orbT*(orbState==='thinking'?1.1:.25);
+    const ring=i<46?57:(i<74?35:0);
+    let tx,ty;
+    if(ring>0){const baseA=Math.atan2(p.t.y-OC,p.t.x-OC)+spin*(ring===57?1:-1.4);
+      tx=OC+Math.cos(baseA)*ring*breathe;ty=OC+Math.sin(baseA)*ring*breathe}
+    else{tx=OC+(p.t.x-OC)*breathe;ty=OC+(p.t.y-OC)*breathe}
+    p.vx+=(tx-p.x)*.055;p.vy+=(ty-p.y)*.055;p.vx*=.86;p.vy*=.86;p.x+=p.vx;p.y+=p.vy;
+    if(Math.hypot(tx-p.x,ty-p.y)<3)settled++;
+    const hue=i%3;const col=hue===0?'#8f5bff':hue===1?'#C4527A':'#5a48ff';
+    ox.globalAlpha=.55+orbPulse*.4;
+    ox.fillStyle=col;ox.beginPath();ox.arc(p.x,p.y,p.t.s*(1+orbPulse*.35),0,7);ox.fill();
   });
-  lp.connect(master);
-}
-function blip(f=520,dur=.12,type='sine',vol=.08){
-  if(!soundOn||!AC)return;
-  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
-  o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*1.35,t+dur);
-  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
-  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur+.02);
-}
-const sBtn=document.getElementById('sound');
-sBtn.addEventListener('click',()=>{
-  soundOn=!soundOn;
-  if(soundOn){ensureAudio();AC.resume();master.gain.value=.22;sBtn.textContent='Sound · on';sBtn.classList.add('on')}
-  else{if(master)master.gain.value=0;sBtn.textContent='Sound · off';sBtn.classList.remove('on')}
-  sBtn.setAttribute('aria-pressed',soundOn);
-});
+  if(orbState==='assembling'&&settled>targets.length*.92){orbState='idle';
+    document.getElementById('orbname').classList.add('show');
+    if(onOrbReady){onOrbReady();onOrbReady=null}}
+  const g=ox.createRadialGradient(OC,OC,0,OC,OC,27);
+  g.addColorStop(0,'rgba(196,82,122,'+(0.25+orbPulse*.3)+')');g.addColorStop(1,'rgba(196,82,122,0)');
+  ox.globalAlpha=1;ox.fillStyle=g;ox.beginPath();ox.arc(OC,OC,27,0,7);ox.fill();
+  requestAnimationFrame(orbLoop);
+})();
+orb.style.width='84px';orb.style.height='84px';
 
-/* ---------------- typewriter reactions ---------------- */
-const timers={};
-function react(id,text){
-  const el=document.getElementById(id);clearInterval(timers[id]);
-  el.classList.add('show');el.classList.remove('done');el.textContent='';
-  let i=0;timers[id]=setInterval(()=>{
-    el.textContent=text.slice(0,++i);
-    if(i%3===0)blip(700+Math.random()*300,.03,'sine',.015);
-    if(i>=text.length){clearInterval(timers[id]);el.classList.add('done')}
-  },18);
+/* ---------------- single-question scene engine ---------------- */
+const stage=document.getElementById('stage');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function makeScene(html){
+  const sc=document.createElement('div');sc.className='scene';sc.innerHTML=html;
+  stage.appendChild(sc);stage.scrollTop=0;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>sc.classList.add('in')));
+  return sc;
+}
+async function retireScene(sc){
+  sc.classList.remove('in');sc.classList.add('out');
+  await sleep(460);sc.remove();
 }
 
-/* ---------------- navigation ---------------- */
-const screens=[...document.querySelectorAll('.screen')];
-let cursorScreen=0;
-function go(n){
-  screens[cursorScreen].classList.remove('live');
-  cursorScreen=n;screens[n].classList.add('live');
-  document.getElementById('progress').style.width=(n/(screens.length-1)*100)+'%';
-  energy=Math.min(1,.25+n*.11);
-  blip(340+n*60,.18,'triangle',.05);
-}
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.go)));
+/* one full question step: question scene in, answer, question out,
+   reaction as its own full scene, hold, out */
+async function step({qtag=null,title,small=null,hint='',options=null,multi=false,exclusive=null,minPick=1,
+                     typed=false,placeholder='',react=null,reactHold=2400}){
+  const sc=makeScene(
+    (qtag?`<div class="qtag">${qtag}</div>`:'')+
+    `<div class="title">${title}</div>`+
+    (small?`<div class="small">${small}</div>`:'')+
+    `<div class="controls"><div class="hintline">${hint}</div>`+
+    (typed
+      ?`<div class="typedblock"><textarea maxlength="240" placeholder="${placeholder}"></textarea><button>Send →</button></div>`
+      :`<div class="chipset"></div>`)+
+    `</div>`
+  );
+  let answer;
 
-/* ---------------- tier ---------------- */
-const tc=document.getElementById('tierChips');
-TIERS.forEach(t=>{
-  const c=document.createElement('button');c.className='chip';c.textContent=t;
-  c.addEventListener('click',()=>{
-    S.tier=t;[...tc.children].forEach(x=>x.classList.remove('picked'));c.classList.add('picked');
-    react('r1',TIER_REACT[t]);blip(480,.1);
-    setTimeout(()=>go(2),1400);
-  });tc.appendChild(c);
-});
-
-/* ---------------- Q1 ---------------- */
-const q1o=document.getElementById('q1opts');
-Q1.forEach(o=>{
-  const b=document.createElement('button');b.className='opt';
-  b.innerHTML=`<span class="k">${o.k}</span>${o.t}`;
-  b.addEventListener('click',()=>{
-    S.q1=o.t;[...q1o.children].forEach(x=>x.classList.remove('picked'));b.classList.add('picked');
-    react('r2',o.r);blip(520,.1);
-    document.getElementById('q1follow').style.display= (o.k==='D'||o.k==='E') ? 'none':'block';
-    if(o.k==='D'||o.k==='E') setTimeout(()=>go(3),1600);
-  });q1o.appendChild(b);
-});
-document.getElementById('q1text').addEventListener('input',e=>S.q1text=e.target.value);
-
-/* ---------------- Q2 tap-to-rank ---------------- */
-const q2c=document.getElementById('q2chips'),q2next=document.getElementById('q2next');
-function q2render(){
-  q2c.innerHTML='';
-  Q2.forEach(t=>{
-    const c=document.createElement('button');c.className='chip';c.textContent=t;
-    const idx=S.q2.indexOf(t);
-    if(idx>-1){c.classList.add('picked');const r=document.createElement('span');r.className='rank';r.textContent=idx+1;c.appendChild(r)}
-    c.addEventListener('click',()=>{
-      if(S.q2.includes(t)||S.q2.length>=3)return;
-      S.q2.push(t);blip(440+S.q2.length*80,.1);q2render();
-      if(S.q2.length===1)react('r3',Q2_REACT[t]);
-      if(S.q2.length===3){q2next.disabled=false}
+  if(typed){
+    const ta=sc.querySelector('textarea');
+    await sleep(500);ta.focus();
+    answer=await new Promise(res=>{
+      const send=()=>{const v=ta.value.trim();if(!v)return;res(v)};
+      sc.querySelector('.typedblock button').addEventListener('click',send);
+      ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
     });
-    q2c.appendChild(c);
-  });
-}
-q2render();
-document.getElementById('q2reset').addEventListener('click',()=>{S.q2=[];q2next.disabled=true;q2render()});
+  }else{
+    const set=sc.querySelector('.chipset');
+    if(options.length===1)set.classList.add('single');
+    answer=await new Promise(res=>{
+      const picked=new Set();
+      options.forEach((op,i)=>{
+        const c=document.createElement('button');c.className='chip'+(options.length===1?' begin':'');
+        c.textContent=op;set.appendChild(c);
+        setTimeout(()=>c.classList.add('in'),110+55*i);
+        c.addEventListener('click',()=>{
+          if(!multi){c.classList.add('picked');res({value:op,index:i});return}
+          if(picked.has(op)){picked.delete(op);c.classList.remove('picked')}
+          else{picked.add(op);c.classList.add('picked')}
+          if(outBtn&&picked.size){outBtn.classList.remove('picked');optedOut=false}
+          sync();
+        });
+      });
 
-/* ---------------- Q3 ---------------- */
-const ab=document.getElementById('ab');
-ab.querySelectorAll('.abcard').forEach(card=>{
-  card.addEventListener('click',()=>{
-    if(S.q3)return;S.q3=card.dataset.ab;ab.classList.add('locked');
-    ab.querySelectorAll('.abcard').forEach(c=>{
-      c.classList.add(c.dataset.ab===CLAUDE_EXHIBIT?'reveal-ai':'reveal-human');
+      let outBtn=null,doneBtn=null,optedOut=false;
+      const sync=()=>{
+        const ok=optedOut||picked.size>=minPick;
+        if(doneBtn)doneBtn.classList.toggle('ready',ok);
+      };
+      if(multi){
+        const row=document.createElement('div');row.className='actionrow';
+        if(exclusive){
+          outBtn=document.createElement('button');outBtn.className='optout';outBtn.textContent=exclusive;
+          outBtn.addEventListener('click',()=>{
+            optedOut=!optedOut;outBtn.classList.toggle('picked',optedOut);
+            if(optedOut){picked.clear();[...set.children].forEach(x=>x.classList.remove('picked'))}
+            sync();
+          });
+          row.appendChild(outBtn);
+        }
+        doneBtn=document.createElement('button');doneBtn.className='donebtn';doneBtn.textContent='Done →';
+        doneBtn.addEventListener('click',()=>{
+          if(optedOut)res({values:[exclusive]});else res({values:[...picked]});
+        });
+        row.appendChild(doneBtn);
+        sc.querySelector('.controls').appendChild(row);
+        setTimeout(()=>row.classList.add('in'),110+55*options.length);
+      }
     });
-    const correct=S.q3===CLAUDE_EXHIBIT;
-    react('r4',correct
-      ? "Correct — B was Claude. You're calibrated better than most of your colleagues will be."
-      : "That one was the human. B was Claude — and you're in good company: most people miss it.");
-    blip(correct?660:300,.25,correct?'sine':'sawtooth',.06);
-    document.getElementById('q3next').style.display='inline-flex';
-  });
-});
+  }
 
-/* ---------------- Q4 multi ---------------- */
-const q4c=document.getElementById('q4chips'),q4next=document.getElementById('q4next');
-Q4.forEach(t=>{
-  const c=document.createElement('button');c.className='chip';c.textContent=t;
-  c.addEventListener('click',()=>{
-    const i=S.q4.indexOf(t);
-    if(i>-1){S.q4.splice(i,1);c.classList.remove('picked')}
-    else{S.q4.push(t);c.classList.add('picked');blip(500,.08)}
-    q4next.disabled=S.q4.length===0;
-    for(const [key,line] of Q4_REACT){ if(S.q4.includes(key)){react('r5',line);break} }
-  });q4c.appendChild(c);
-});
+  /* let the picked chip register visually, then retire the question */
+  await sleep(300);
+  await retireScene(sc);
 
-/* ---------------- archetype ---------------- */
-function decide(){
-  const usage = 4-Q1.findIndex(o=>o.t===S.q1); // A=4 … E=0
-  const correct = S.q3===CLAUDE_EXHIBIT;
-  const has=x=>S.q4.includes(x);
-  if(usage>=3&&correct)return ARCHETYPES.power;
-  if(usage>=3&&!correct)return ARCHETYPES.delegator;
-  if(correct&&has("I don't trust the output"))return ARCHETYPES.verifier;
-  if(usage<=1&&has("I don't know what to ask it"))return ARCHETYPES.bystander;
-  if(usage<=2&&(has("I don't trust the output")||has("Feels a bit like cheating")))return ARCHETYPES.skeptic;
-  if(usage<=1)return ARCHETYPES.bystander;
-  return ARCHETYPES.explorer;
+  /* the feedback takes the whole stage */
+  const reactText=typeof react==='function'?react(answer):react;
+  if(reactText){
+    orbState='talking';
+    const rs=makeScene(
+      `<div class="reacttag"><b>${AGENT_NAME}</b></div>`+
+      `<div class="reactbig">${reactText}</div>`
+    );
+    await sleep(reactHold);
+    orbState='idle';
+    await retireScene(rs);
+  }
+  return answer;
 }
+function setProgress(n){document.getElementById('progress').style.width=(n*100/7)+'%';energy=Math.min(1,.3+n*.1)}
 
-/* ---------------- finish + submit ---------------- */
-document.getElementById('finish').addEventListener('click',()=>{
-  S.q5=document.getElementById('q5text').value;
-  const a=decide();S.archetype=a.n;
-  document.getElementById('archName').textContent=a.n;
-  document.getElementById('archLines').innerHTML=a.l+'<br><br><b>See you in the room.</b>';
-  go(7);energy=1;
-  setTimeout(()=>document.getElementById('card').classList.add('show'),300);
+/* ---------------- content ---------------- */
+const TIERS=["Associate","Consultant","Project Leader","Principal / Partner","MDP"];
+const TIER_R={
+  "Associate":"An Associate. Calibrating: least to unlearn, most to gain.",
+  "Consultant":"A Consultant. Calibrating for peak hours-per-deliverable territory.",
+  "Project Leader":"A Project Leader. You review everything, so this compounds. Calibrating.",
+  "Principal / Partner":"Principal or Partner. Your hours cost the most. Calibrating.",
+  "MDP":"An MDP. Calibrating, and on my best behaviour."
+};
+const Q1_OPTS=[
+  "I ask questions, copy answers into my work",
+  "I use it for a specific task or two, nothing systematic",
+  "I use Projects, custom instructions, or upload files",
+  "I run parallel chats and reuse my own prompt systems",
+  "I've built something others on my team now use",
+  "I've connected real tools (Zoom, Outlook...) or built Skills",
+  "Honestly, barely touched it"
+];
+const Q1_R=[
+  "The most common starting point. You won't stay there long.",
+  "A toehold. We'll turn that into something systematic.",
+  "Ahead of most already. My job now is to pull you into heavier work.",
+  "Impressive. You're closer to agentic than you think.",
+  "You've already crossed from user to builder. Noted.",
+  "Edge of the map. Flagging you for the advanced segments.",
+  "A clean slate. Zero bad habits to unlearn, honestly the fastest group to teach."
+];
+const Q1_LEVEL=[0,0,1,2,2,3,0];
+
+const Q2_EX="Nothing yet, that's why I'm here";
+const Q2_OPTS=[
+  "Summarising docs and transcripts",
+  "Research and synthesis",
+  "Building end-to-end decks, not just slides",
+  "Financial models or scenario analysis",
+  "Turning messy data into insights",
+  "Agents that run a workflow start to finish",
+  "Redlining and reviewing documents",
+  "Building a tool my team now uses",
+  "Writing code or small automations",
+  "Wired into my real tools (Zoom, Outlook, Drive...)",
+  "Client-ready charts and visuals",
+  "Second-opinion on my own thinking or analysis"
+];
+const Q3_EX="I don't even know what these mean, honestly";
+const Q3_OPTS=[
+  "Projects","Skills","Connectors","Artifacts","MCP",
+  "Claude Code","Cowork","Subagents","Context engineering",
+  "Model routing","Evals","Human-in-the-loop"
+];
+const Q4_OPTS=[
+  "A mini tool for an everyday problem",
+  "A daily habit, AI woven into my routine",
+  "A core casework engine: research, analysis, decks",
+  "A workflow wired into my real tools (Zoom, Outlook...)",
+  "A Skill that compounds, smarter every week",
+  "An agent that runs on its own, I just review",
+  "Something my whole team can use, not just me"
+];
+const Q4_INTENSITY=[0,0,1,2,2,3,2];
+/* internal only, for the response sheet. Never shown to the participant. */
+const INTERNAL=["Foundations","Momentum","Power user","Frontier"];
+/* the honest read, shown instead of any track or tag */
+const FEEDBACK=[
+  "You're going to get a lot out of this. "+OWNER_NAME+" builds the session so the fundamentals land properly rather than rushing past them, and you'll leave having made something yourself. Come curious, and bring the questions you've been too busy to ask.",
+  "You've got a real base to build on. "+OWNER_NAME+" will pitch the room so the early ground moves quickly for people like you, and the depth arrives sooner. Expect the middle stretch to be where your week starts changing.",
+  "You're well ahead of the average starting point. "+OWNER_NAME+" tailors the depth to the room, so with people at your level in it, the session pushes further into the harder material. Expect to be challenged, and expect the people around you to learn from what's on your screen.",
+  "You're at the front edge of the room. "+OWNER_NAME+" adapts the session to the level in front of him, so expect the advanced material to go deeper and faster than it otherwise would. Come with your hardest problem, and be ready to be a lighthouse for your table."
+];
+const FEEDBACK_NOTE="Nothing here is assigned to you. Everyone starts the session together. This just helps "+OWNER_NAME+" shape the room around who's actually in it.";
+/* the same setup checklist for everybody */
+const CHECKLIST=[
+  "Install the <b>Claude Desktop app</b> from claude.ai/download (Mac or Windows).",
+  "Sign in with your <b>work account / SSO</b>, not a personal one.",
+  "Open a chat and ask it anything, just to confirm your access works.",
+  "Find the <b>Cowork tab</b> in the desktop app and open it once.",
+  "Find the <b>Code tab</b> (Claude Code) and open it once. No terminal needed, it's built in.",
+  "In Settings, open <b>Connectors</b> and connect one tool you actually use (Zoom or Outlook). About 30 seconds.",
+  "Install the <b>Claude mobile app</b> and sign in with the same account."
+];
+const CHECKLIST_PLAIN="Workshop prep checklist\n"+
+  "1. Install the Claude Desktop app from claude.ai/download\n"+
+  "2. Sign in with your work account / SSO\n"+
+  "3. Open a chat, ask anything, confirm access works\n"+
+  "4. Open the Cowork tab once\n"+
+  "5. Open the Code tab (Claude Code) once\n"+
+  "6. Settings > Connectors: connect one tool (Zoom or Outlook)\n"+
+  "7. Install the Claude mobile app, same account\n\n"+
+  "Heads up: the first time you open Claude Code it may ask you to install extras "+
+  "(Python, Git, command line tools) or to sign in to GitHub. Say yes and finish all of it "+
+  "before the session. It only happens once, and it is the single most common reason "+
+  "people lose the first 20 minutes.";
+
+/* ---------------- the flow ---------------- */
+async function flow(){
+  /* intro */
+  await step({
+    title:`Hello. I'm <span class="a">${AGENT_NAME}</span>,<br>${OWNER_NAME}'s agent.`,
+    small:OWNER_NAME+" is buried in casework right now, so I'm setting up the <b>AI Fluency workshop</b> for him.",
+    options:["Begin →"]
+  });
+  setProgress(1);
+
+  await step({
+    title:`First, where do you <span class="a">sit?</span>`,
+    options:TIERS,
+    react:a=>{S.tier=a.value;return TIER_R[a.value]}
+  });
+  setProgress(2);
+
+  await step({
+    qtag:"<b>01</b> / 05 · starting point",
+    title:`Where do you actually <span class="a">live</span> with AI today?`,
+    options:Q1_OPTS,
+    react:a=>{S.q1=a.value;S.q1i=a.index;return Q1_R[a.index]}
+  });
+  setProgress(3);
+
+  await step({
+    qtag:"<b>02</b> / 05 · use cases",
+    title:`What has AI actually <span class="a">done for you</span> at work?`,
+    hint:"Tap all that apply",
+    options:Q2_OPTS,multi:true,exclusive:Q2_EX,
+    react:a=>{S.q2=a.values;
+      const adv=["Building end-to-end decks, not just slides","Financial models or scenario analysis",
+        "Turning messy data into insights","Agents that run a workflow start to finish",
+        "Redlining and reviewing documents","Building a tool my team now uses",
+        "Writing code or small automations","Wired into my real tools (Zoom, Outlook, Drive...)",
+        "Client-ready charts and visuals"].filter(x=>S.q2.includes(x)).length;
+      const n=S.q2.includes(Q2_EX)?0:S.q2.length;
+      return n===0?"Perfect. By hour one, that list stops being empty."
+        :adv===0?"The classics. Now we go past what most people ever try."
+        :adv<=2?"Some real range there. We'll push the advanced side further."
+        :"You're already deep. So we go where chat can't follow."}
+  });
+  setProgress(4);
+
+  await step({
+    qtag:"<b>03</b> / 05 · vocabulary",
+    title:`Which of these could you <span class="a">explain to a colleague?</span>`,
+    hint:"Tap what you genuinely know",
+    options:Q3_OPTS,multi:true,exclusive:Q3_EX,
+    react:a=>{S.q3=a.values;
+      const v=S.q3.includes(Q3_EX)?0:S.q3.length;
+      return v===0?"Respect for the honesty. That vocabulary is half the superpower, and you'll have it by the break."
+        :v<=3?"A start. The rest is exactly what the middle of the session installs."
+        :v<=7?"Solidly fluent. Noting you for the deeper track."
+        :"You could probably teach this. I'm telling "+OWNER_NAME+"."}
+  });
+  setProgress(5);
+
+  await step({
+    qtag:"<b>04</b> / 05 · your build",
+    title:`In the build hour, what do you want to <span class="a">walk out holding?</span>`,
+    hint:"Pick two or three",
+    options:Q4_OPTS,multi:true,minPick:2,
+    react:a=>{S.q4=a.values;
+      const maxI=Math.max(...S.q4.map(x=>Q4_INTENSITY[Q4_OPTS.indexOf(x)]));S.q4i=maxI;
+      return maxI<=0?"Habits and mini tools. Underrated, and exactly where daily hours hide."
+        :maxI===1?"Core casework it is. The engine room."
+        :maxI===2?"Connected and compounding. This is where real time comes back."
+        :"Ambitious. I'm telling "+OWNER_NAME+" to bring the good stuff."}
+  });
+  setProgress(6);
+
+  await step({
+    qtag:"<b>05</b> / 05 · the open door",
+    title:`Name one thing that genuinely <span class="a">frustrates you</span>, that you wish AI could just do.`,
+    small:"Timesheets. Expense reports. Formatting decks at midnight. Chasing people for inputs. Anything, in your own words.",
+    hint:"One line · Enter to send",typed:true,
+    placeholder:"The thing that steals your evenings...",
+    react:a=>{S.q5=a;return "Filed. The most common frustrations become the live builds in the room."}
+  });
+  setProgress(7);
+
+  /* the read + the prep card */
+  const lvl=Q1_LEVEL[S.q1i];
+  const vocabN=S.q3.includes(Q3_EX)?0:S.q3.length;
+  const eff=Math.min(3,Math.max(lvl,(vocabN>=6?lvl+1:lvl),(S.q4i>=3?Math.max(lvl,2):lvl)));
+  S.level=eff;
+  makeScene(`
+    <div class="qtag">Compiled by ${AGENT_NAME}</div>
+    <div class="title">Read this. Then <span class="grad">save the card.</span></div>
+    <div class="brief" style="margin-top:22px"><div class="in2">
+      <div class="lbl">How ${AGENT_NAME} is setting the room for you</div>
+      <p style="margin-top:12px">${FEEDBACK[eff]}</p>
+      <p style="margin-top:12px;color:var(--fog);font-size:13.5px">${FEEDBACK_NOTE}</p>
+    </div></div>
+    <div class="brief" style="margin-top:18px"><div class="in2">
+      <div class="lbl">Before the workshop · the 10-minute setup</div>
+      <p style="margin-top:10px;color:var(--fog);font-size:13.5px">Same list for everyone. Do it before the day so zero workshop minutes go to installs. Screenshot this card, or copy it into your task list.</p>
+      <ol style="margin-top:14px">${CHECKLIST.map(p=>`<li>${p}</li>`).join('')}</ol>
+      <div class="flagcard">
+        <div class="flaghead">Important · first time opening Claude Code</div>
+        <p>It may ask you to install extras (Python, Git, command line tools) or to sign in to GitHub. <b>Say yes and finish all of it before the session.</b> It only happens once, and it's the single most common reason people lose their first twenty minutes.</p>
+      </div>
+      <button id="copylist" class="copybtn">Copy checklist</button>
+      <div id="status">Logging your response...</div>
+      <div id="fallback"><p style="font-size:12.5px;color:var(--fog)">Network blocked the drop-box. Paste this code back to the organiser instead:</p>
+      <code id="fbcode"></code><button id="copyfb">Copy code</button></div>
+    </div></div>
+    <div class="closing">Show up with the list done, and the whole session is building, not setup.<br><span class="grad">See you in the room.</span></div>
+  `);
+  document.getElementById('copylist').addEventListener('click',()=>{
+    navigator.clipboard.writeText(CHECKLIST_PLAIN);
+    document.getElementById('copylist').textContent='Copied ✓';
+    setTimeout(()=>{document.getElementById('copylist').textContent='Copy checklist'},2500);
+  });
+  document.getElementById('orbwrap').classList.add('docked');
   submit();
-});
+}
+
+/* ---------------- submit ---------------- */
 async function submit(){
-  const payload={tier:S.tier,q1_option:S.q1,q1_text:S.q1text,q2_ranking:S.q2,
-    q3_choice:S.q3,q3_correct:S.q3===CLAUDE_EXHIBIT,q4_blockers:S.q4,q5_text:S.q5,
-    archetype:S.archetype,seconds:Math.round((Date.now()-S.start)/1000)};
+  const payload={tier:S.tier,q1_level_claim:S.q1,q2_usecases:S.q2,q3_vocab:S.q3,
+    q4_build_goal:(S.q4||[]).join(', '),q5_delegate:S.q5,assigned_level:INTERNAL[S.level],
+    seconds:Math.round((Date.now()-S.start)/1000)};
   const st=document.getElementById('status');
   if(!WEBHOOK_URL||WEBHOOK_URL.startsWith('PASTE')){fallback(payload,st);return}
   try{
-    await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',
-      headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+    await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(payload)});
     st.textContent='Response logged ✓';st.classList.add('ok');
   }catch(e){fallback(payload,st)}
 }
 function fallback(payload,st){
-  st.textContent='Couldn\'t reach the drop-box';
-  document.getElementById('fallback').style.display='block';
+  st.textContent="Couldn't reach the drop-box";
+  const fb=document.getElementById('fallback');fb.style.display='block';
   const code=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
   document.getElementById('fbcode').textContent=code;
-  document.getElementById('copyfb').addEventListener('click',()=>{
-    navigator.clipboard.writeText(code);
-    document.getElementById('copyfb').textContent='Copied ✓';
-  });
+  document.getElementById('copyfb').onclick=()=>{navigator.clipboard.writeText(code);
+    document.getElementById('copyfb').textContent='Copied ✓'};
 }
+
+/* ---------------- boot ---------------- */
+onOrbReady=()=>setTimeout(flow,300);
 </script>
 </body>
 </html>
