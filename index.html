@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before the Workshop — 90 seconds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07060c;
+  --paper:#f1eefb;
+  --fog:#9d97b3;
+  --violet:#662AF4;
+  --rose:#C4527A;
+  --ultra:#2D0BD5;
+  --line:rgba(241,238,251,.14);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--ink);color:var(--paper);font-family:var(--sans);
+  overflow:hidden;-webkit-font-smoothing:antialiased;
+}
+@media(pointer:fine){ body{cursor:none} body a,body button,body .opt,body .chip{cursor:none} }
+
+#bg{position:fixed;inset:0;z-index:0}
+#grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;mix-blend-mode:overlay}
+
+/* ---- custom cursor ---- */
+#cursor{position:fixed;z-index:60;width:18px;height:18px;border:1px solid var(--paper);
+  border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);
+  transition:width .25s ease,height .25s ease,opacity .3s;opacity:0}
+#cursor.on{opacity:.9}
+#cursor.hov{width:40px;height:40px;border-color:var(--rose)}
+#cursor i{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;
+  background:var(--paper);transform:translate(-50%,-50%)}
+@media(pointer:coarse){#cursor{display:none}}
+
+/* ---- chrome ---- */
+#progress{position:fixed;top:0;left:0;height:2px;z-index:50;width:0%;
+  background:linear-gradient(90deg,var(--ultra),var(--violet),var(--rose));
+  transition:width .7s cubic-bezier(.7,0,.2,1)}
+#brand{position:fixed;top:22px;left:26px;z-index:50;font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--fog)}
+#sound{position:fixed;top:18px;right:22px;z-index:50;background:none;border:1px solid var(--line);
+  color:var(--fog);font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  padding:8px 14px;border-radius:99px;transition:color .3s,border-color .3s}
+#sound:hover{color:var(--paper);border-color:var(--paper)}
+#sound.on{color:var(--paper);border-color:var(--rose)}
+
+/* ---- screens ---- */
+.screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
+  padding:28px;opacity:0;visibility:hidden;transform:translateY(26px);
+  transition:opacity .6s ease,transform .6s cubic-bezier(.6,0,.2,1),visibility 0s .6s}
+.screen.live{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease .15s,transform .6s cubic-bezier(.2,.8,.2,1) .15s}
+.col{width:100%;max-width:660px}
+
+.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--fog);margin-bottom:22px}
+.eyebrow b{color:var(--rose);font-weight:500}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(42px,7.5vw,84px);line-height:1.02;letter-spacing:-.01em}
+h1 em{font-style:italic;background:linear-gradient(100deg,var(--violet),var(--rose));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.6vw,50px);line-height:1.08;margin-bottom:8px}
+h2 em{font-style:italic;color:var(--rose)}
+.sub{color:var(--fog);font-size:15px;line-height:1.55;font-weight:300;margin-top:14px;max-width:46ch}
+
+/* ---- controls ---- */
+.opts{margin-top:34px;display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:baseline;gap:16px;text-align:left;background:rgba(241,238,251,.03);
+  border:1px solid var(--line);border-radius:14px;padding:15px 18px;color:var(--paper);
+  font-family:var(--sans);font-size:15.5px;font-weight:300;letter-spacing:.01em;
+  transition:border-color .25s,background .25s,transform .25s}
+.opt:hover{border-color:var(--rose);background:rgba(196,82,122,.07);transform:translateX(6px)}
+.opt .k{font-size:11px;color:var(--fog);letter-spacing:.15em;min-width:14px}
+.opt.picked{border-color:var(--violet);background:rgba(102,42,244,.12)}
+
+.chips{margin-top:32px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid var(--line);background:rgba(241,238,251,.03);color:var(--paper);
+  font-family:var(--sans);font-size:14px;font-weight:300;padding:12px 20px;border-radius:99px;
+  transition:.25s;position:relative}
+.chip:hover{border-color:var(--rose);transform:translateY(-2px)}
+.chip.picked{border-color:var(--violet);background:rgba(102,42,244,.16)}
+.chip .rank{position:absolute;top:-9px;right:-6px;width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(120deg,var(--violet),var(--rose));color:#fff;font-size:11px;
+  display:flex;align-items:center;justify-content:center;font-weight:500}
+
+textarea,input[type=text]{width:100%;background:rgba(241,238,251,.04);border:1px solid var(--line);
+  border-radius:14px;color:var(--paper);font-family:var(--sans);font-weight:300;font-size:16px;
+  padding:16px 18px;outline:none;resize:none;transition:border-color .25s}
+textarea:focus,input[type=text]:focus{border-color:var(--violet)}
+textarea::placeholder,input::placeholder{color:rgba(157,151,179,.55)}
+
+.next{margin-top:26px;display:inline-flex;align-items:center;gap:12px;background:var(--paper);
+  color:var(--ink);border:none;font-family:var(--sans);font-weight:500;font-size:13px;
+  letter-spacing:.2em;text-transform:uppercase;padding:16px 30px;border-radius:99px;
+  transition:transform .25s,box-shadow .25s,opacity .3s}
+.next:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(196,82,122,.35)}
+.next:disabled{opacity:.25;pointer-events:none}
+.ghost{background:none;border:none;color:var(--fog);font-family:var(--sans);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;margin-top:14px;margin-left:6px;text-decoration:underline;text-underline-offset:4px}
+.ghost:hover{color:var(--paper)}
+
+/* ---- the form talks back ---- */
+.react{min-height:26px;margin-top:24px;font-family:var(--serif);font-style:italic;
+  font-size:19px;color:var(--rose);opacity:0;transform:translateY(6px);transition:.4s}
+.react.show{opacity:1;transform:none}
+.react::after{content:'▍';animation:blink 1s steps(1) infinite;color:var(--violet);font-style:normal}
+.react.done::after{content:''}
+@keyframes blink{50%{opacity:0}}
+
+/* ---- Q3 A/B cards ---- */
+.ab{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.ab{grid-template-columns:1fr}}
+.abcard{text-align:left;border:1px solid var(--line);background:rgba(241,238,251,.03);
+  border-radius:16px;padding:22px;color:var(--paper);font-family:var(--sans);transition:.3s;position:relative;overflow:hidden}
+.abcard:hover{border-color:var(--rose);transform:translateY(-3px)}
+.abcard .tag{font-size:11px;letter-spacing:.22em;color:var(--fog);text-transform:uppercase;margin-bottom:12px}
+.abcard p{font-size:14.5px;line-height:1.6;font-weight:300}
+.abcard.reveal-ai{border-color:var(--violet);background:rgba(102,42,244,.12)}
+.abcard.reveal-human{border-color:var(--line);opacity:.55}
+.abcard .stamp{position:absolute;top:14px;right:16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  padding:4px 10px;border-radius:99px;opacity:0;transition:.4s .2s}
+.abcard.reveal-ai .stamp{opacity:1;background:linear-gradient(120deg,var(--violet),var(--rose));color:#fff}
+.abcard.reveal-human .stamp{opacity:1;border:1px solid var(--line);color:var(--fog)}
+.ab.locked .abcard{pointer-events:none}
+
+/* ---- archetype ---- */
+#card{position:relative;border-radius:22px;padding:2px;margin-top:36px;opacity:0;transform:scale(.94);transition:1s cubic-bezier(.2,.8,.2,1)}
+#card.show{opacity:1;transform:none}
+#card::before{content:'';position:absolute;inset:0;border-radius:22px;padding:1.5px;
+  background:conic-gradient(from var(--a,0deg),var(--ultra),var(--violet),var(--rose),var(--ultra));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;animation:spin 5s linear infinite}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes spin{to{--a:360deg}}
+#card .in{position:relative;border-radius:20px;background:rgba(12,10,22,.82);backdrop-filter:blur(18px);
+  padding:44px 40px;text-align:left}
+#card .lbl{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--fog);margin-bottom:14px}
+#card .name{font-family:var(--serif);font-size:clamp(38px,6vw,58px);line-height:1;
+  background:linear-gradient(100deg,var(--paper),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+#card .lines{margin-top:20px;color:var(--fog);font-weight:300;font-size:15.5px;line-height:1.65}
+#card .lines b{color:var(--paper);font-weight:400}
+#status{margin-top:22px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog)}
+#status.ok{color:#7fd6a4}
+#fallback{display:none;margin-top:14px}
+#fallback code{display:block;background:rgba(241,238,251,.05);border:1px dashed var(--line);
+  border-radius:10px;padding:12px;font-size:11px;word-break:break-all;color:var(--fog);margin-top:8px}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<canvas id="grain"></canvas>
+<div id="cursor"><i></i></div>
+<div id="progress"></div>
+<div id="brand">Design Studios · Pre-read</div>
+<button id="sound" aria-pressed="false">Sound · off</button>
+
+<!-- 0 · INTRO -->
+<section class="screen live" id="s0">
+  <div class="col">
+    <div class="eyebrow">Before the workshop · <b>90 seconds</b> · 5 questions</div>
+    <h1>This form is<br><em>reading you.</em></h1>
+    <p class="sub">Five questions before the Claude session. No wrong answers — but the form has opinions, and it will share them. What you say here quietly decides what we build for you in the room.</p>
+    <button class="next" data-go="1">Begin →</button>
+  </div>
+</section>
+
+<!-- 0.5 · TIER -->
+<section class="screen" id="s1">
+  <div class="col">
+    <div class="eyebrow">First — who's answering?</div>
+    <h2>Your <em>vantage point.</em></h2>
+    <p class="sub">Same five questions for everyone. Different stakes.</p>
+    <div class="chips" id="tierChips"></div>
+    <div class="react" id="r1"></div>
+  </div>
+</section>
+
+<!-- 1 · Q1 -->
+<section class="screen" id="s2">
+  <div class="col">
+    <div class="eyebrow"><b>01</b> / 05</div>
+    <h2>When did you last put AI to <em>real work?</em></h2>
+    <div class="opts" id="q1opts"></div>
+    <div id="q1follow" style="display:none;margin-top:18px">
+      <input type="text" id="q1text" maxlength="140" placeholder="One line — what did you make it do?">
+      <button class="next" data-go="3" style="margin-top:18px">Next →</button>
+    </div>
+    <div class="react" id="r2"></div>
+  </div>
+</section>
+
+<!-- 2 · Q2 -->
+<section class="screen" id="s3">
+  <div class="col">
+    <div class="eyebrow"><b>02</b> / 05</div>
+    <h2>Where do your hours actually <em>go to die?</em></h2>
+    <p class="sub">Tap your top three, worst first. The form is taking notes.</p>
+    <div class="chips" id="q2chips"></div>
+    <button class="ghost" id="q2reset">Start over</button>
+    <div class="react" id="r3"></div>
+    <div><button class="next" id="q2next" data-go="4" disabled>Next →</button></div>
+  </div>
+</section>
+
+<!-- 3 · Q3 -->
+<section class="screen" id="s4">
+  <div class="col">
+    <div class="eyebrow"><b>03</b> / 05 · a small test</div>
+    <h2>One of these was written by <em>Claude.</em></h2>
+    <p class="sub">Two takeaway slides from the same case. Trust your eye.</p>
+    <div class="ab" id="ab">
+      <button class="abcard" data-ab="A">
+        <div class="tag">Exhibit A<span class="stamp">Human</span></div>
+        <p>Churn is concentrated in the mid-market segment — roughly 60% of losses from ~20% of accounts. Worth noting the data only covers two quarters, so we'd want to validate before making this the headline, but the pattern held in both.</p>
+      </button>
+      <button class="abcard" data-ab="B">
+        <div class="tag">Exhibit B<span class="stamp">Claude</span></div>
+        <p>Mid-market accounts drive a disproportionate share of churn: 20% of the base, 60% of losses. The pattern is consistent across both observed quarters, though the short window argues for validation before anchoring the recommendation on it.</p>
+      </button>
+    </div>
+    <div class="react" id="r4"></div>
+    <div><button class="next" id="q3next" data-go="5" style="display:none">Next →</button></div>
+  </div>
+</section>
+
+<!-- 4 · Q4 -->
+<section class="screen" id="s5">
+  <div class="col">
+    <div class="eyebrow"><b>04</b> / 05</div>
+    <h2>What actually <em>stops you?</em></h2>
+    <p class="sub">Pick everything that's true. Honesty is anonymous-ish.</p>
+    <div class="chips" id="q4chips"></div>
+    <div class="react" id="r5"></div>
+    <div><button class="next" id="q4next" data-go="6" disabled>Next →</button></div>
+  </div>
+</section>
+
+<!-- 5 · Q5 -->
+<section class="screen" id="s6">
+  <div class="col">
+    <div class="eyebrow"><b>05</b> / 05 · the magic wand</div>
+    <h2>One task from <em>this month</em> you'd hand over tomorrow —</h2>
+    <p class="sub">— if you knew it would just work. Be specific. The best answers get solved live, in the room.</p>
+    <div style="margin-top:26px"><textarea id="q5text" rows="3" maxlength="280" placeholder="e.g. Turn our interview notes into a first-draft findings deck…"></textarea></div>
+    <button class="next" id="finish">Read my result →</button>
+  </div>
+</section>
+
+<!-- 6 · ARCHETYPE -->
+<section class="screen" id="s7">
+  <div class="col">
+    <div class="eyebrow">The form has decided</div>
+    <h2>You are —</h2>
+    <div id="card"><div class="in">
+      <div class="lbl">AI fluency archetype</div>
+      <div class="name" id="archName"></div>
+      <div class="lines" id="archLines"></div>
+    </div></div>
+    <div id="status">Logging your response…</div>
+    <div id="fallback">
+      <p class="sub" style="margin-top:0">Network blocked the drop-box. Paste this code back to the organiser instead:</p>
+      <code id="fbcode"></code>
+      <button class="ghost" id="copyfb">Copy code</button>
+    </div>
+  </div>
+</section>
+
+<script>
+/* =============================================================
+   CONFIG — paste your Apps Script web-app URL between the quotes
+   ============================================================= */
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyvModStDR72K2p-l8bvDW1vPLclAP07VbFtpW-jCFwaMSTQAnaW3hCPQgTemhQCLVd4A/exec";
+const CLAUDE_EXHIBIT = "B";
+
+/* ---------------- state ---------------- */
+const S = { tier:null, q1:null, q1text:"", q2:[], q3:null, q4:[], q5:"", start:Date.now() };
+
+/* ---------------- data ---------------- */
+const TIERS = ["Associate","Consultant","Project Leader","Principal / Partner","MDP"];
+const TIER_REACT = {
+  "Associate":"The tier with the least to unlearn. Advantage: you.",
+  "Consultant":"Peak hours-per-slide territory. We can work with that.",
+  "Project Leader":"You review everyone's everything. This gets interesting.",
+  "Principal / Partner":"Your time costs the most. So does not knowing this.",
+  "MDP":"Noted. The form will be on its best behaviour."
+};
+const Q1 = [
+  {k:"A", t:"Today — it's part of how I work", r:"So you're the one the others quietly ask."},
+  {k:"B", t:"This week, for something real", r:"A real task counts double. Noted."},
+  {k:"C", t:"I've tried it a few times", r:"Tried it, filed it away. We'll reopen the file."},
+  {k:"D", t:"I've mostly watched others use it", r:"Spectating is research. Technically."},
+  {k:"E", t:"Honestly — never for work", r:"Perfect. Zero bad habits to unlearn."}
+];
+const Q2 = ["Research & synthesis","Building decks","Excel & analysis","Writing — emails, memos, proposals","Meeting prep & follow-ups","Reviewing others' work"];
+const Q2_REACT = {
+  "Research & synthesis":"Hours down the source mines. We can send a machine down instead.",
+  "Building decks":"Decks first. The workshop just wrote itself.",
+  "Excel & analysis":"The spreadsheet hours. There's a whole act about that.",
+  "Writing — emails, memos, proposals":"Words by the pound. Fixable.",
+  "Meeting prep & follow-ups":"Meetings about meetings. We've all been there.",
+  "Reviewing others' work":"Trust, but verify — faster. Good pick."
+};
+const Q4 = ["Client confidentiality worries","I don't trust the output","I don't know what to ask it","Faster to do it myself","Feels a bit like cheating","Nothing — I use it constantly"];
+const Q4_REACT = [
+  ["Faster to do it myself","'Faster to do it myself' — the most expensive sentence in consulting."],
+  ["Client confidentiality worries","Confidentiality first — sensible. There's a safe way to do all of this. We'll show it."],
+  ["I don't know what to ask it","'Don't know what to ask' — the most fixable problem on this list."],
+  ["I don't trust the output","Healthy skepticism. We'll teach it to show its work."],
+  ["Feels a bit like cheating","Only cheating if the machine does the thinking. It won't."],
+  ["Nothing — I use it constantly","Then you'll want the advanced track. It exists."]
+];
+const ARCHETYPES = {
+  power:{n:"The Secret Power User", l:"You already use it daily — <b>and</b> you can spot its handwriting. In the room, skip the basics: your track is agents, tools and the things nobody's shown you yet."},
+  delegator:{n:"The Delegator", l:"You hand work over freely — but the machine's prose slipped past you. Your unlock is the <b>verification layer</b>: getting speed without inheriting its mistakes."},
+  verifier:{n:"The Verifier", l:"You caught it. Your instinct is to distrust first — which makes you exactly the person advanced workflows are built for. We'll show it <b>showing its work</b>."},
+  bystander:{n:"The Curious Bystander", l:"Watching from a safe distance, mostly wondering what to even ask. Good news: that's the fastest gap to close, and it closes in the <b>first hour</b>."},
+  skeptic:{n:"The Skeptic", l:"You have reasons, and honestly, some are good ones. The workshop's job isn't to convert you — it's to put one <b>undeniable result</b> in your hands and let you decide."},
+  explorer:{n:"The Explorer", l:"You've poked at it, seen a flicker of the point, and parked it. The session is built to move you from <b>flicker to habit</b> — with your own work, not demos."}
+};
+
+/* ---------------- background: living blobs ---------------- */
+const bg = document.getElementById('bg'), bx = bg.getContext('2d');
+let W,H,energy=0.25, mx=innerWidth/2, my=innerHeight/2, vx=0, vy=0, lx=mx, ly=my;
+const COLS = ['#662AF4','#C4527A','#2D0BD5','#8b3df0'];
+const blobs = Array.from({length:7},(_,i)=>({
+  x:Math.random(), y:Math.random(),
+  r:.18+Math.random()*.22, c:COLS[i%COLS.length],
+  sp:.4+Math.random()*.8, ph:Math.random()*Math.PI*2, ph2:Math.random()*Math.PI*2
+}));
+function sizeBG(){W=bg.width=innerWidth*devicePixelRatio;H=bg.height=innerHeight*devicePixelRatio;bg.style.width=innerWidth+'px';bg.style.height=innerHeight+'px'}
+sizeBG();addEventListener('resize',sizeBG);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t0=performance.now();
+function paint(now){
+  const t=(now-t0)/1000;
+  bx.fillStyle='#07060c';bx.fillRect(0,0,W,H);
+  bx.globalCompositeOperation='screen';
+  vx += ((mx-lx)*devicePixelRatio - vx)*.08; vy += ((my-ly)*devicePixelRatio - vy)*.08;
+  lx=mx; ly=my;
+  const drift = Math.hypot(vx,vy);
+  blobs.forEach((b,i)=>{
+    const sp = b.sp*(.35+energy*1.4)*(reduced?0.15:1);
+    const px = (b.x + Math.sin(t*sp*.21+b.ph)*.22 + Math.cos(t*sp*.13+b.ph2)*.14)*W;
+    const py = (b.y + Math.cos(t*sp*.17+b.ph2)*.22 + Math.sin(t*sp*.11+b.ph)*.14)*H;
+    const pull = 1/(1+Math.hypot(px-mx*devicePixelRatio,py-my*devicePixelRatio)/(W*.25));
+    const jx = px + vx*pull*2.2, jy = py + vy*pull*2.2;
+    const r = b.r*Math.min(W,H)*(1+energy*.5+pull*drift*.0006);
+    const g = bx.createRadialGradient(jx,jy,0,jx,jy,r);
+    g.addColorStop(0,b.c+'cc');g.addColorStop(1,b.c+'00');
+    bx.globalAlpha=.16+energy*.30;
+    bx.fillStyle=g;bx.beginPath();bx.arc(jx,jy,r,0,7);bx.fill();
+  });
+  bx.globalAlpha=1;bx.globalCompositeOperation='source-over';
+  requestAnimationFrame(paint);
+}
+requestAnimationFrame(paint);
+
+/* grain */
+const gr=document.getElementById('grain'),gx=gr.getContext('2d');
+function grain(){gr.width=innerWidth/2;gr.height=innerHeight/2;gr.style.width=innerWidth+'px';gr.style.height=innerHeight+'px';
+  const d=gx.createImageData(gr.width,gr.height);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=14}gx.putImageData(d,0,0)}
+grain();addEventListener('resize',grain);
+
+/* ---------------- cursor ---------------- */
+const cur=document.getElementById('cursor');let cx=mx,cy=my,shown=false;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;if(!shown){cur.classList.add('on');shown=true}});
+(function loop(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(loop)})();
+addEventListener('mouseover',e=>{if(e.target.closest('button,.opt,.chip,a,textarea,input'))cur.classList.add('hov')});
+addEventListener('mouseout',()=>cur.classList.remove('hov'));
+
+/* ---------------- sound (all synthesized) ---------------- */
+let AC=null, master=null, soundOn=false;
+function ensureAudio(){
+  if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();
+  master=AC.createGain();master.gain.value=.22;master.connect(AC.destination);
+  const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1500;lp.Q.value=.1;
+  const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=.05;lg.gain.value=300;
+  lfo.connect(lg);lg.connect(lp.frequency);lfo.start();
+  [[220,'sine',.09],[329.63,'sine',.045],[440,'triangle',.02],[659.25,'sine',.012]].forEach(([f,ty,g])=>{
+    const o=AC.createOscillator(),og=AC.createGain();o.type=ty;o.frequency.value=f;og.gain.value=g;
+    o.connect(og);og.connect(lp);o.start();
+  });
+  lp.connect(master);
+}
+function blip(f=520,dur=.12,type='sine',vol=.08){
+  if(!soundOn||!AC)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*1.35,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur+.02);
+}
+const sBtn=document.getElementById('sound');
+sBtn.addEventListener('click',()=>{
+  soundOn=!soundOn;
+  if(soundOn){ensureAudio();AC.resume();master.gain.value=.22;sBtn.textContent='Sound · on';sBtn.classList.add('on')}
+  else{if(master)master.gain.value=0;sBtn.textContent='Sound · off';sBtn.classList.remove('on')}
+  sBtn.setAttribute('aria-pressed',soundOn);
+});
+
+/* ---------------- typewriter reactions ---------------- */
+const timers={};
+function react(id,text){
+  const el=document.getElementById(id);clearInterval(timers[id]);
+  el.classList.add('show');el.classList.remove('done');el.textContent='';
+  let i=0;timers[id]=setInterval(()=>{
+    el.textContent=text.slice(0,++i);
+    if(i%3===0)blip(700+Math.random()*300,.03,'sine',.015);
+    if(i>=text.length){clearInterval(timers[id]);el.classList.add('done')}
+  },18);
+}
+
+/* ---------------- navigation ---------------- */
+const screens=[...document.querySelectorAll('.screen')];
+let cursorScreen=0;
+function go(n){
+  screens[cursorScreen].classList.remove('live');
+  cursorScreen=n;screens[n].classList.add('live');
+  document.getElementById('progress').style.width=(n/(screens.length-1)*100)+'%';
+  energy=Math.min(1,.25+n*.11);
+  blip(340+n*60,.18,'triangle',.05);
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.go)));
+
+/* ---------------- tier ---------------- */
+const tc=document.getElementById('tierChips');
+TIERS.forEach(t=>{
+  const c=document.createElement('button');c.className='chip';c.textContent=t;
+  c.addEventListener('click',()=>{
+    S.tier=t;[...tc.children].forEach(x=>x.classList.remove('picked'));c.classList.add('picked');
+    react('r1',TIER_REACT[t]);blip(480,.1);
+    setTimeout(()=>go(2),1400);
+  });tc.appendChild(c);
+});
+
+/* ---------------- Q1 ---------------- */
+const q1o=document.getElementById('q1opts');
+Q1.forEach(o=>{
+  const b=document.createElement('button');b.className='opt';
+  b.innerHTML=`<span class="k">${o.k}</span>${o.t}`;
+  b.addEventListener('click',()=>{
+    S.q1=o.t;[...q1o.children].forEach(x=>x.classList.remove('picked'));b.classList.add('picked');
+    react('r2',o.r);blip(520,.1);
+    document.getElementById('q1follow').style.display= (o.k==='D'||o.k==='E') ? 'none':'block';
+    if(o.k==='D'||o.k==='E') setTimeout(()=>go(3),1600);
+  });q1o.appendChild(b);
+});
+document.getElementById('q1text').addEventListener('input',e=>S.q1text=e.target.value);
+
+/* ---------------- Q2 tap-to-rank ---------------- */
+const q2c=document.getElementById('q2chips'),q2next=document.getElementById('q2next');
+function q2render(){
+  q2c.innerHTML='';
+  Q2.forEach(t=>{
+    const c=document.createElement('button');c.className='chip';c.textContent=t;
+    const idx=S.q2.indexOf(t);
+    if(idx>-1){c.classList.add('picked');const r=document.createElement('span');r.className='rank';r.textContent=idx+1;c.appendChild(r)}
+    c.addEventListener('click',()=>{
+      if(S.q2.includes(t)||S.q2.length>=3)return;
+      S.q2.push(t);blip(440+S.q2.length*80,.1);q2render();
+      if(S.q2.length===1)react('r3',Q2_REACT[t]);
+      if(S.q2.length===3){q2next.disabled=false}
+    });
+    q2c.appendChild(c);
+  });
+}
+q2render();
+document.getElementById('q2reset').addEventListener('click',()=>{S.q2=[];q2next.disabled=true;q2render()});
+
+/* ---------------- Q3 ---------------- */
+const ab=document.getElementById('ab');
+ab.querySelectorAll('.abcard').forEach(card=>{
+  card.addEventListener('click',()=>{
+    if(S.q3)return;S.q3=card.dataset.ab;ab.classList.add('locked');
+    ab.querySelectorAll('.abcard').forEach(c=>{
+      c.classList.add(c.dataset.ab===CLAUDE_EXHIBIT?'reveal-ai':'reveal-human');
+    });
+    const correct=S.q3===CLAUDE_EXHIBIT;
+    react('r4',correct
+      ? "Correct — B was Claude. You're calibrated better than most of your colleagues will be."
+      : "That one was the human. B was Claude — and you're in good company: most people miss it.");
+    blip(correct?660:300,.25,correct?'sine':'sawtooth',.06);
+    document.getElementById('q3next').style.display='inline-flex';
+  });
+});
+
+/* ---------------- Q4 multi ---------------- */
+const q4c=document.getElementById('q4chips'),q4next=document.getElementById('q4next');
+Q4.forEach(t=>{
+  const c=document.createElement('button');c.className='chip';c.textContent=t;
+  c.addEventListener('click',()=>{
+    const i=S.q4.indexOf(t);
+    if(i>-1){S.q4.splice(i,1);c.classList.remove('picked')}
+    else{S.q4.push(t);c.classList.add('picked');blip(500,.08)}
+    q4next.disabled=S.q4.length===0;
+    for(const [key,line] of Q4_REACT){ if(S.q4.includes(key)){react('r5',line);break} }
+  });q4c.appendChild(c);
+});
+
+/* ---------------- archetype ---------------- */
+function decide(){
+  const usage = 4-Q1.findIndex(o=>o.t===S.q1); // A=4 … E=0
+  const correct = S.q3===CLAUDE_EXHIBIT;
+  const has=x=>S.q4.includes(x);
+  if(usage>=3&&correct)return ARCHETYPES.power;
+  if(usage>=3&&!correct)return ARCHETYPES.delegator;
+  if(correct&&has("I don't trust the output"))return ARCHETYPES.verifier;
+  if(usage<=1&&has("I don't know what to ask it"))return ARCHETYPES.bystander;
+  if(usage<=2&&(has("I don't trust the output")||has("Feels a bit like cheating")))return ARCHETYPES.skeptic;
+  if(usage<=1)return ARCHETYPES.bystander;
+  return ARCHETYPES.explorer;
+}
+
+/* ---------------- finish + submit ---------------- */
+document.getElementById('finish').addEventListener('click',()=>{
+  S.q5=document.getElementById('q5text').value;
+  const a=decide();S.archetype=a.n;
+  document.getElementById('archName').textContent=a.n;
+  document.getElementById('archLines').innerHTML=a.l+'<br><br><b>See you in the room.</b>';
+  go(7);energy=1;
+  setTimeout(()=>document.getElementById('card').classList.add('show'),300);
+  submit();
+});
+async function submit(){
+  const payload={tier:S.tier,q1_option:S.q1,q1_text:S.q1text,q2_ranking:S.q2,
+    q3_choice:S.q3,q3_correct:S.q3===CLAUDE_EXHIBIT,q4_blockers:S.q4,q5_text:S.q5,
+    archetype:S.archetype,seconds:Math.round((Date.now()-S.start)/1000)};
+  const st=document.getElementById('status');
+  if(!WEBHOOK_URL||WEBHOOK_URL.startsWith('PASTE')){fallback(payload,st);return}
+  try{
+    await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+    st.textContent='Response logged ✓';st.classList.add('ok');
+  }catch(e){fallback(payload,st)}
+}
+function fallback(payload,st){
+  st.textContent='Couldn\'t reach the drop-box';
+  document.getElementById('fallback').style.display='block';
+  const code=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  document.getElementById('fbcode').textContent=code;
+  document.getElementById('copyfb').addEventListener('click',()=>{
+    navigator.clipboard.writeText(code);
+    document.getElementById('copyfb').textContent='Copied ✓';
+  });
+}
+</script>
+</body>
+</html>
