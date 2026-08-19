@@ -407,7 +407,7 @@ const Q1_R=[
 ];
 const Q1_LEVEL=[0,0,1,2,2,3,0];
 
-const Q2_EX="Nothing yet, that's why I'm here";
+const Q2_EX="Honestly, no idea what's possible";
 const Q2_OPTS=[
   "Summarising docs and transcripts",
   "Research and synthesis",
@@ -485,7 +485,7 @@ async function flow(){
   /* intro */
   await step({
     title:`Hello. I'm <span class="a">${AGENT_NAME}</span>,<br>${OWNER_NAME}'s agent.`,
-    small:OWNER_NAME+" is buried in casework right now, so I'm setting up the <b>AI Fluency workshop</b> for him.",
+    small:"Head's up! A very interesting <b>AI Fluency workshop</b> is happening on the <b>15th and 16th of September in Mumbai</b>.<br><br>"+OWNER_NAME+" will be your facilitator. But right now he's buried deeply in casework, so I'm setting up the workshop for him.<br><br>Please help me with answers to a few questions, won't take more than 2 minutes, promise! :)",
     options:["Begin →"]
   });
   setProgress(1);
@@ -506,8 +506,8 @@ async function flow(){
   setProgress(3);
 
   await step({
-    qtag:"<b>02</b> / 05 · use cases",
-    title:`What has AI actually <span class="a">done for you</span> at work?`,
+    qtag:"<b>02</b> / 05 · your wishlist",
+    title:`What do you <span class="a">want AI to do</span> for you at work?`,
     hint:"Tap all that apply",
     options:Q2_OPTS,multi:true,exclusive:Q2_EX,
     react:a=>{S.q2=a.values;
@@ -516,11 +516,11 @@ async function flow(){
         "Redlining and reviewing documents","Building a reusable prompt or template library",
         "Writing code or small automations","Wired into my real tools (Zoom, Outlook, Drive...)",
         "Client-ready charts and visuals"].filter(x=>S.q2.includes(x)).length;
-      const n=S.q2.includes(Q2_EX)?0:S.q2.length;
-      return n===0?"Perfect. By hour one, that list stops being empty."
-        :adv===0?"The classics. Now we go past what most people ever try."
-        :adv<=2?"Some real range there. We'll push the advanced side further."
-        :"You're already deep. So we go where chat can't follow."}
+      const none=S.q2.includes(Q2_EX);
+      return none?"That's exactly what the session is for. You'll leave with a list."
+        :adv===0?"All very doable. We'll aim you higher than that."
+        :adv<=2?"Ambitious in the right places. Noted for the demos."
+        :"A serious wishlist. Good. That's the session sorted."}
   });
   setProgress(4);
 
@@ -555,7 +555,7 @@ async function flow(){
   await step({
     qtag:"<b>05</b> / 05 · the open door",
     title:`Name one thing that genuinely <span class="a">frustrates you</span>, that you wish AI could just do.`,
-    small:"Timesheets. Expense reports. Formatting decks at midnight. Chasing people for inputs. Whatever you write here feeds what we build in the session.",
+    small:"Reformatting an entire deck to a new template. Reconciling numbers across versions. Turning interview notes into a first draft. Chasing teams for inputs. Whatever you write here feeds what we build in the session.",
     hint:"One line · Enter to send",typed:true,
     placeholder:"The thing that steals your evenings...",
     react:a=>{S.q5=a;return "That goes straight into the build list. What people write here is the raw material we solve for in the room."}
