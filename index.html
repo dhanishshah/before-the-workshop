@@ -189,7 +189,7 @@ const AGENT_NAME  = "Maya";
 const OWNER_NAME  = "Dhanish";
 
 /* ---------------- state ---------------- */
-const S={tier:null,q1:null,q1i:0,q2:[],q3:[],q4:[],q4i:0,q5:"",level:0,start:Date.now()};
+const S={name:"",tier:null,q1:null,q1i:0,q2:[],q3:[],q4:[],q4i:0,q5:"",level:0,start:Date.now()};
 
 /* ---------------- background blobs ---------------- */
 const bg=document.getElementById('bg'),bx=bg.getContext('2d');
@@ -233,7 +233,7 @@ grain();addEventListener('resize',grain);
 /* cursor */
 const cur=document.getElementById('cursor');let cx=mx,cy=my,shown=false;
 addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;if(!shown){cur.classList.add('on');shown=true}});
-(function cl(){cx+=(mx-cx)*.28;cy+=(my-cy)*.28;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(cl)})();
+(function cl(){cx+=(mx-cx)*.85;cy+=(my-cy)*.85;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(cl)})();
 addEventListener('mouseover',e=>{if(e.target.closest('button,textarea,input'))cur.classList.add('hov')});
 addEventListener('mouseout',()=>cur.classList.remove('hov'));
 
@@ -379,13 +379,14 @@ async function step({qtag=null,title,small=null,hint='',options=null,multi=false
 function setProgress(n){document.getElementById('progress').style.width=(n*100/7)+'%';energy=Math.min(1,.3+n*.1)}
 
 /* ---------------- content ---------------- */
+const FN=()=>S.name?S.name.split(' ')[0]:"";
 const TIERS=["Associate","Consultant","Project Leader","Principal / Partner","MDP"];
 const TIER_R={
-  "Associate":"An Associate. Calibrating: least to unlearn, most to gain.",
-  "Consultant":"A Consultant. Calibrating for peak hours-per-deliverable territory.",
-  "Project Leader":"A Project Leader. You review everything, so this compounds. Calibrating.",
-  "Principal / Partner":"Principal or Partner. Your hours cost the most. Calibrating.",
-  "MDP":"An MDP. Calibrating, and on my best behaviour."
+  "Associate":n=>n+", an Associate. Least to unlearn, most to gain. Calibrating.",
+  "Consultant":n=>"A Consultant. Calibrating for peak hours-per-deliverable territory, "+n+".",
+  "Project Leader":n=>"A Project Leader. You review everything, "+n+", so this compounds. Calibrating.",
+  "Principal / Partner":n=>"Principal or Partner. Your hours cost the most, "+n+". Calibrating.",
+  "MDP":n=>"An MDP. Calibrating carefully, "+n+", and on my best behaviour."
 };
 const Q1_OPTS=[
   "I ask questions, copy answers into my work",
@@ -397,13 +398,13 @@ const Q1_OPTS=[
   "Honestly, barely touched it"
 ];
 const Q1_R=[
-  "The most common starting point. You won't stay there long.",
-  "A toehold. We'll turn that into something systematic.",
-  "Ahead of most already. My job now is to pull you into heavier work.",
-  "Impressive. You're closer to agentic than you think.",
-  "You've already crossed from user to builder. Noted.",
-  "Edge of the map. Flagging you for the advanced segments.",
-  "A clean slate. Zero bad habits to unlearn, honestly the fastest group to teach."
+  n=>"The most common starting point, "+n+". You won't stay there long.",
+  n=>"A toehold. We'll turn that into something systematic, "+n+".",
+  n=>n+", you're ahead of most already. My job now is to pull you into heavier work.",
+  n=>"Impressive, "+n+". You're closer to agentic than you think.",
+  n=>"You've already crossed from user to builder, "+n+". Noted.",
+  n=>"Edge of the map, "+n+". Flagging you for the advanced segments.",
+  n=>"A clean slate, "+n+". Zero bad habits to unlearn, honestly the fastest group to teach."
 ];
 const Q1_LEVEL=[0,0,1,2,2,3,0];
 
@@ -491,9 +492,19 @@ async function flow(){
   setProgress(1);
 
   await step({
-    title:`First, where do you <span class="a">sit?</span>`,
+    title:`First, what should I <span class="a">call you?</span>`,
+    hint:"Your name · Enter to send",typed:true,
+    placeholder:"Your name...",
+    react:a=>{S.name=a.trim();
+      const first=S.name.split(' ')[0];
+      return "Nice to meet you, "+first+". Logging you in with "+OWNER_NAME+"."}
+  });
+  setProgress(1.5);
+
+  await step({
+    title:`And where do you <span class="a">sit</span> in the org?`,
     options:TIERS,
-    react:a=>{S.tier=a.value;return TIER_R[a.value]}
+    react:a=>{S.tier=a.value;return TIER_R[a.value](FN())}
   });
   setProgress(2);
 
@@ -501,7 +512,7 @@ async function flow(){
     qtag:"<b>01</b> / 05 · starting point",
     title:`Where do you actually <span class="a">live</span> with AI today?`,
     options:Q1_OPTS,
-    react:a=>{S.q1=a.value;S.q1i=a.index;return Q1_R[a.index]}
+    react:a=>{S.q1=a.value;S.q1i=a.index;return Q1_R[a.index](FN())}
   });
   setProgress(3);
 
@@ -517,10 +528,10 @@ async function flow(){
         "Writing code or small automations","Wired into my real tools (Zoom, Outlook, Drive...)",
         "Client-ready charts and visuals"].filter(x=>S.q2.includes(x)).length;
       const none=S.q2.includes(Q2_EX);
-      return none?"That's exactly what the session is for. You'll leave with a list."
-        :adv===0?"All very doable. We'll aim you higher than that."
-        :adv<=2?"Ambitious in the right places. Noted for the demos."
-        :"A serious wishlist. Good. That's the session sorted."}
+      return none?"That's exactly what the session is for, "+FN()+". You'll leave with a list."
+        :adv===0?"All very doable, "+FN()+". We'll aim you higher than that."
+        :adv<=2?"Ambitious in the right places, "+FN()+". Noted for the demos."
+        :"A serious wishlist, "+FN()+". Good. That's the session sorted."}
   });
   setProgress(4);
 
@@ -531,10 +542,10 @@ async function flow(){
     options:Q3_OPTS,multi:true,exclusive:Q3_EX,
     react:a=>{S.q3=a.values;
       const v=S.q3.includes(Q3_EX)?0:S.q3.length;
-      return v===0?"Respect for the honesty. That vocabulary is half the superpower, and you'll have it by the break."
-        :v<=3?"A start. The rest is exactly what the middle of the session installs."
-        :v<=7?"Solidly fluent. Noting you for the deeper track."
-        :"You could probably teach this. I'm telling "+OWNER_NAME+"."}
+      return v===0?"Respect for the honesty, "+FN()+". That vocabulary is half the superpower, and you'll have it by the break."
+        :v<=3?"A start, "+FN()+". The rest is exactly what the middle of the session installs."
+        :v<=7?"Solidly fluent, "+FN()+". Noting you for the deeper track."
+        :FN()+", you could probably teach this. I'm telling "+OWNER_NAME+"."}
   });
   setProgress(5);
 
@@ -545,10 +556,10 @@ async function flow(){
     options:Q4_OPTS,multi:true,minPick:2,
     react:a=>{S.q4=a.values;
       const maxI=Math.max(...S.q4.map(x=>Q4_INTENSITY[Q4_OPTS.indexOf(x)]));S.q4i=maxI;
-      return maxI<=0?"Habits and mini tools. Underrated, and exactly where daily hours hide."
-        :maxI===1?"Core casework it is. The engine room."
-        :maxI===2?"Connected and compounding. This is where real time comes back."
-        :"Ambitious. I'm telling "+OWNER_NAME+" to bring the good stuff."}
+      return maxI<=0?"Habits and mini tools, "+FN()+". Underrated, and exactly where daily hours hide."
+        :maxI===1?"Core casework it is, "+FN()+". The engine room."
+        :maxI===2?"Connected and compounding, "+FN()+". This is where real time comes back."
+        :"Ambitious, "+FN()+". I'm telling "+OWNER_NAME+" to bring the good stuff."}
   });
   setProgress(6);
 
@@ -558,7 +569,7 @@ async function flow(){
     small:"Reformatting an entire deck to a new template. Reconciling numbers across versions. Turning interview notes into a first draft. Chasing teams for inputs. Whatever you write here feeds what we build in the session.",
     hint:"One line · Enter to send",typed:true,
     placeholder:"The thing that steals your evenings...",
-    react:a=>{S.q5=a;return "That goes straight into the build list. What people write here is the raw material we solve for in the room."}
+    react:a=>{S.q5=a;return "That goes straight into the build list, "+FN()+". What people write here is the raw material we solve for in the room."}
   });
   setProgress(7);
 
@@ -571,7 +582,7 @@ async function flow(){
     <div class="qtag">Compiled by ${AGENT_NAME}</div>
     <div class="title">Read this. Then <span class="grad">save the card.</span></div>
     <div class="brief" style="margin-top:22px"><div class="in2">
-      <div class="lbl">How ${AGENT_NAME} is setting the room for you</div>
+      <div class="lbl">How ${AGENT_NAME} is setting the room for ${FN()||"you"}</div>
       <p style="margin-top:12px">${FEEDBACK[eff]}</p>
       <p style="margin-top:12px;color:var(--fog);font-size:13.5px">${FEEDBACK_NOTE}</p>
     </div></div>
@@ -595,7 +606,7 @@ async function flow(){
       <div id="fallback"><p style="font-size:12.5px;color:var(--fog)">Network blocked the drop-box. Paste this code back to the organiser instead:</p>
       <code id="fbcode"></code><button id="copyfb">Copy code</button></div>
     </div></div>
-    <div class="closing">Show up with the list done, and the whole session is building, not setup.<br><span class="grad">See you in the room.</span></div>
+    <div class="closing">Show up with the list done, and the whole session is building, not setup.<br><span class="grad">See you in the room${S.name?", "+S.name.split(' ')[0]:""}.</span></div>
   `);
   document.getElementById('prompttext').textContent=SETUP_PROMPT;
   document.getElementById('copyprompt').addEventListener('click',()=>{
@@ -614,7 +625,7 @@ async function flow(){
 
 /* ---------------- submit ---------------- */
 async function submit(){
-  const payload={tier:S.tier,q1_level_claim:S.q1,q2_usecases:S.q2,q3_vocab:S.q3,
+  const payload={name:S.name,tier:S.tier,q1_level_claim:S.q1,q2_usecases:S.q2,q3_vocab:S.q3,
     q4_build_goal:(S.q4||[]).join(', '),q5_delegate:S.q5,assigned_level:INTERNAL[S.level],
     seconds:Math.round((Date.now()-S.start)/1000)};
   const st=document.getElementById('status');
